@@ -62,7 +62,7 @@ public class UploadToServer {
             System.out.println("sftp channel opened and connected.");
             channelSftp = (ChannelSftp) channel;
             //channelSftp.cd(SFTPWORKINGDIR);
-            channelSftp.cd("www");
+            channelSftp.cd("www/P2PFS/");
             File f = new File(fileName);
             if(f.exists()==false)
             	throw new Exception("server.txt not found");
