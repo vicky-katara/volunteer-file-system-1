@@ -1,11 +1,11 @@
-package indexServer;
+package lib;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.Enumeration;
 
 public class NetworkAddress {
-	static String getIPAddress(String interfaceName){
+	public static String getIPAddress(String interfaceName){
 		try{
 		Enumeration<InetAddress> list = getInetAddresses(interfaceName);
 		String ret;

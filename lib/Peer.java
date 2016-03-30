@@ -15,6 +15,13 @@ public class Peer {
 		this.ipAddress = ipAddress;
 		this.portNumber = portNumber;
 	}
+	
+	public Peer(String canonical){
+		String[] arr = canonical.split(":");
+		this.ipAddress = arr[0];
+		this.portNumber = Integer.parseInt(arr[1]);
+	}
+	
 	public String toString(){
 		return this.ipAddress+":"+this.portNumber;
 	}

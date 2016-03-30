@@ -1,47 +1,55 @@
 package clientPeer;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import java.io.IOException;
 import java.net.Socket;
 
+import lib.NetworkAddress;
 import lib.Packet;
+import lib.Peer;
 import lib.SenderReceiver;
 import requestReceiver.RequestReceiver;
 
 public class Client {
-	static boolean debugFlag=true;
 	
-	static int requestReceiverPortNumber;
+	ArrayList<Peer> peerList = new ArrayList<Peer>();
+	
+	static boolean debugFlag=true;
+	static int requestReceiverPortNumber = 4567;
+	static String selfIpAddress;
+	
 	private Socket socketToServer;
+	
 	Client(String serverIP, int portNumber){
+		// Set self IP Address
+		Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s8");
+		
 		// Connect to the Server and ask for host names available to store files.
 		System.out.println("Connecting to server at "+serverIP+":"+portNumber);
 		
 		// Create socket to server
 		socketToServer = new SenderReceiver().returnSocketTo(serverIP, portNumber);// connect to server
 		// Create Payload to send to the server
-		String portNumberPayload = new Packet(0, Client.requestReceiverPortNumber+"").getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
+		String portNumberPayload = new Packet(0, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
 		
 		// receive list of all IP Addresses and Port Numbers from Server 
-		Packet videosPacket = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer));
+		String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
+		
+		System.out.println("Server said:"+peerListString);
+		
+		String[] peerArr = peerListString.split(";");
+		for(int i=0; i<peerArr.length; i++)
+			peerList.add(new Peer(peerArr[i]));
+		
+		System.out.println("Here is the list of all Peers online right now:"+peerList);
 		
 		main_menu();
 		
 		// go to command line interface
-	}
-
-	public static void main(String[] args) {
-		try {
-			String[] connectionInfo = new URLReader().getConnectionString().split(":");
-			new RequestReceiver(requestReceiverPortNumber).start();
-			Client c =new Client(connectionInfo[0],Integer.parseInt(connectionInfo[1]));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	private static void main_menu() {
@@ -130,5 +138,15 @@ public class Client {
 
 	private static void open(String fileName) {
 		// TODO Auto-generated method stub
+	}
+	
+	public static void main(String[] args) {
+		try {
+			String[] connectionInfo = new URLReader().getConnectionString().split(":");
+			new RequestReceiver(requestReceiverPortNumber).start();
+			Client c =new Client(connectionInfo[0],Integer.parseInt(connectionInfo[1]));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

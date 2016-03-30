@@ -31,7 +31,7 @@ public class Packet {
 	}
 	
 	public String toString(){
-		return type+":"+data;
+		return getPayload();
 	}
 	
 	public String getPayload(){
