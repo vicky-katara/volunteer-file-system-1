@@ -13,4 +13,4 @@ Type 1: Server replies with a list of clients available to store data, including
 	Format:
 		|type|1|/type||data|<IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>;|data|
 	Example:
-		|type|1|/type||data|192.168.56.1:7777; 192.168.56.2:7777; 192.168.56.3:7777; 192.168.56.4:7777;|data|
+		|type|1|/type||data|192.168.56.1:7777;192.168.56.2:7777;192.168.56.3:7777;192.168.56.4:7777;|data|
