@@ -42,11 +42,20 @@ public class Client {
 		System.out.println("Server said:"+peerListString);
 		
 		String[] peerArr = peerListString.split(";");
-		for(int i=0; i<peerArr.length; i++)
-			peerList.add(new Peer(peerArr[i]));
 		
+		Peer self = new Peer(Client.selfIpAddress, Client.requestReceiverPortNumber);
+		
+		for(int i=0; i<peerArr.length; i++){
+			Peer newPeer = new Peer(peerArr[i]);
+			if( newPeer.equals(self) == false){
+				peerList.add(newPeer);
+			}
+		}
+		
+		// Available list
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
 		
+		// interact with user
 		main_menu();
 		
 		// go to command line interface

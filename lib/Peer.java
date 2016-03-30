@@ -22,6 +22,13 @@ public class Peer {
 		this.portNumber = Integer.parseInt(arr[1]);
 	}
 	
+	public boolean equals(Object o){
+		if(o instanceof Peer == false )
+			return false;
+		Peer newPeer = (Peer)o;
+		return newPeer.ipAddress.equals(this.ipAddress) && newPeer.portNumber==this.portNumber;
+	}
+	
 	public String toString(){
 		return this.ipAddress+":"+this.portNumber;
 	}
