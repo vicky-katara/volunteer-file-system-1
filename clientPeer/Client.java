@@ -155,9 +155,9 @@ public class Client {
 	
 	public static void main(String[] args) {
 		try {
-			//String[] connectionInfo = new URLReader().getConnectionString().split(":");
-			//new RequestReceiver(requestReceiverPortNumber).start();
-			Client c =new Client("192.168.0.36",7739);
+			String[] connectionInfo = new URLReader().getConnectionString().split(":");
+			new RequestReceiver(requestReceiverPortNumber).start();
+			Client c =new Client(connectionInfo[0],Integer.parseInt(connectionInfo[1]));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
