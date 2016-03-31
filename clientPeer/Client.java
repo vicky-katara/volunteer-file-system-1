@@ -10,7 +10,6 @@ import lib.NetworkAddress;
 import lib.Packet;
 import lib.Peer;
 import lib.SenderReceiver;
-import requestReceiver.RequestReceiver;
 
 public class Client {
 	
@@ -24,20 +23,25 @@ public class Client {
 	
 	Client(String serverIP, int portNumber){
 		// Set self IP Address
+		//Client.selfIpAddress = "192.168.0.40"; - for mac
 		Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s8");
 		
 		// Connect to the Server and ask for host names available to store files.
 		System.out.println("Connecting to server at "+serverIP+":"+portNumber);
 		
 		// Create socket to server
-		socketToServer = new SenderReceiver().returnSocketTo(serverIP, portNumber);// connect to server
+		socketToServer = new SenderReceiver().returnSocketTo(serverIP, portNumber);
+		
 		// Create Payload to send to the server
 		String portNumberPayload = new Packet(0, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
+		System.out.println("For Debugging: ");
+		System.out.println(Client.selfIpAddress);
+		System.out.println("Check this: "+portNumberPayload);
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
 		
 		// receive list of all IP Addresses and Port Numbers from Server 
-		String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
+		/*String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
 		
 		System.out.println("Server said:"+peerListString);
 		
@@ -50,7 +54,7 @@ public class Client {
 			if( newPeer.equals(self) == false){
 				peerList.add(newPeer);
 			}
-		}
+		}*/
 		
 		// Available list
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
@@ -151,10 +155,10 @@ public class Client {
 	
 	public static void main(String[] args) {
 		try {
-			String[] connectionInfo = new URLReader().getConnectionString().split(":");
-			new RequestReceiver(requestReceiverPortNumber).start();
-			Client c =new Client(connectionInfo[0],Integer.parseInt(connectionInfo[1]));
-		} catch (IOException e) {
+			//String[] connectionInfo = new URLReader().getConnectionString().split(":");
+			//new RequestReceiver(requestReceiverPortNumber).start();
+			Client c =new Client("192.168.0.36",7739);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

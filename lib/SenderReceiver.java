@@ -16,6 +16,7 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public class SenderReceiver {
 	Socket s;
@@ -61,14 +62,14 @@ public class SenderReceiver {
 			DatagramSocket clientSocket = new DatagramSocket();
 			byte[] sendData = payload.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
-			//System.out.println("Sending datagram:"+sendData);
+			System.out.println("Sending datagram:"+sendData);
 			clientSocket.send(sendPacket);
 			byte[] receiveData = new byte[10240];
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			clientSocket.receive(receivePacket);
 			String reply = new String(receivePacket.getData());
-			//System.out.println("Received datagram:"+reply+"|");
-			//System.out.println("Of the form :"+Arrays.toString(receivePacket.getData()));
+			System.out.println("Received datagram:"+reply+"|");
+			System.out.println("Of the form :"+Arrays.toString(receivePacket.getData()));
 			clientSocket.close();
 			return reply;
 		}catch(Exception e){e.printStackTrace();return "Error in receiving datagram packet";}
@@ -91,6 +92,7 @@ public class SenderReceiver {
 	
 	public Socket returnSocketTo(String serverIP, int serverPort){
 		try{
+		//System.out.println("Reached here");
 		return new Socket(serverIP, serverPort);
 		}
 		catch(IOException e){
