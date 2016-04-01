@@ -27,16 +27,26 @@ public class Server extends Thread implements Runnable{
 		while(true) {
 			//Receive Payload sent from the client
 			Packet payloadFromClient = new Packet(new SenderReceiver().receiveMessageViaTCPOn(clientSocket));
-			String[] clientInformation = payloadFromClient.getData().split(":");
 			
+			//Get option from client
+			int clientOption = payloadFromClient.getOption();
+			//Get port, ip address from client
+			String[] clientInformation = payloadFromClient.getData().split(":");
 			String clientIPaddress = clientInformation[0];
 			int clientPortNumber = Integer.parseInt(clientInformation[1]);
-			//Server should have the updated hashmap of portnumbers and ip addresses at this point 
 			addToHash(clientIPaddress, clientPortNumber);
 			viewCurrentHash();
 			
-			//Send current list of active peers to requestng client
-			
+			switch(clientOption){
+			case 0:
+				break;
+			case 1:
+				//Send current list of active peers to requesting client
+				Packet packetFromServer = new Packet(clientOption, allActivePeersHash());
+				String payloadFromServer = packetFromServer.getPayload();
+				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, payloadFromServer);
+				break;
+			}			
 		}
 		
 		
@@ -52,6 +62,15 @@ public class Server extends Thread implements Runnable{
 	
 	public void updateHash() {
 		
+	}
+	
+	public String allActivePeersHash(){
+		
+		StringBuilder listOfPeers = new StringBuilder();
+		for (Map.Entry<String, Integer> entry : globalSet.entrySet()) {
+		    listOfPeers.append(entry.getKey()+":"+entry.getValue()+";");
+		}
+		return listOfPeers.toString();
 	}
 	
 	public void viewCurrentHash(){

@@ -10,21 +10,22 @@ import lib.NetworkAddress;
 import lib.Packet;
 import lib.Peer;
 import lib.SenderReceiver;
+import requestReceiver.RequestReceiver;
 
 public class Client {
 	
 	ArrayList<Peer> peerList = new ArrayList<Peer>();
 	
 	static boolean debugFlag=true;
-	static int requestReceiverPortNumber = 4567;
+	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
 	
 	private Socket socketToServer;
 	
 	Client(String serverIP, int portNumber){
 		// Set self IP Address
-		//Client.selfIpAddress = "192.168.0.40"; - for mac
-		Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s8");
+		Client.selfIpAddress = "192.168.0.44"; //- for mac
+		//Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s8");
 		
 		// Connect to the Server and ask for host names available to store files.
 		System.out.println("Connecting to server at "+serverIP+":"+portNumber);
@@ -33,15 +34,13 @@ public class Client {
 		socketToServer = new SenderReceiver().returnSocketTo(serverIP, portNumber);
 		
 		// Create Payload to send to the server
-		String portNumberPayload = new Packet(0, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
-		System.out.println("For Debugging: ");
-		System.out.println(Client.selfIpAddress);
-		System.out.println("Check this: "+portNumberPayload);
+		//String portNumberPayload = new Packet(0, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
+		String portNumberPayload = new Packet(1, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
 		
 		// receive list of all IP Addresses and Port Numbers from Server 
-		/*String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
+		String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
 		
 		System.out.println("Server said:"+peerListString);
 		
@@ -54,7 +53,7 @@ public class Client {
 			if( newPeer.equals(self) == false){
 				peerList.add(newPeer);
 			}
-		}*/
+		}
 		
 		// Available list
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
