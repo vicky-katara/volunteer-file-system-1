@@ -14,3 +14,46 @@ Type 1: Server replies with a list of clients available to store data, including
 		|type|1|/type||data|<IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>;|data|
 	Example:
 		|type|1|/type||data|192.168.56.1:7777;192.168.56.2:7777;192.168.56.3:7777;192.168.56.4:7777;|data|
+		
+Type 100: requestor asks requestReceiver whether it is on.
+
+	Format:
+		|type|100|/type||data||data|
+	Example:
+		|type|100|/type||data||data|
+		
+Type 101: requestorReciever tells requestor it is on.
+
+	Format:
+		|type|101|/type||data||data|
+	Example:
+		|type|101|/type||data||data|
+		
+Type 102: requestor asks requestReceiver to send the chunk with ChunkName.
+
+	Format:
+		|type|102|/type||data|<chunkName>|data|
+	Example:
+		|type|102|/type||data|CS87ASNSKAJDN|data|
+		
+Type 103: requestReceiver sends back the chunk(256 bytes) with the chunkName.
+
+	Format:
+		|type|103|/type||data|<chunkName>:[data bytes]|data|
+	Example:
+		|type|103|/type||data|CS87ASNSKAJDN:[01, 01, 21,...]|data|
+
+		
+Type 104: requestor asks requestReceiver to store the chunk with ChunkName.
+
+	Format:
+		|type|104|/type||data|<chunkName>:[data bytes]|data|
+	Example:
+		|type|104|/type||data|CS87ASNSKAJDN:[01, 01, 21,...]|data|
+		
+Type 105: requestReceiver sends back the confirmation with the chunkName.
+
+	Format:
+		|type|105|/type||data|<chunkName>|data|
+	Example:
+		|type|105|/type||data|CS87ASNSKAJDN|data|
