@@ -24,18 +24,18 @@ public class NetworkAddress {
 	}
 	static Enumeration<InetAddress> getInetAddresses(String interfaceName){
 		try{
-		Enumeration<NetworkInterface> enumNet =NetworkInterface.getNetworkInterfaces();
+		Enumeration<NetworkInterface> enumNet = NetworkInterface.getNetworkInterfaces();
 		NetworkInterface curr;
-		while(enumNet.hasMoreElements()){
-			curr=enumNet.nextElement();
-			if(curr.getName().equalsIgnoreCase(interfaceName))//enp0s8
-				return curr.getInetAddresses();
-			//System.out.println(curr.getName()+" "+curr.getDisplayName());
-		}
-		}catch(Exception e){}
+			while(enumNet.hasMoreElements()){
+				curr=enumNet.nextElement();
+				if(curr.getName().equalsIgnoreCase(interfaceName) && curr.getName().equals("lo")==false)//enp0s8
+					return curr.getInetAddresses();
+				//System.out.println(curr.getName()+" "+curr.getDisplayName());
+			}
+		} catch(Exception e){e.printStackTrace();}
 		return null;
 	}
 	public static void main(String[] args) {
-		System.out.println(getIPAddress("enp0s8"));
+		System.out.println(getIPAddress("enp0s3"));
 	}
 }

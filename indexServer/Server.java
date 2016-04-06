@@ -87,7 +87,7 @@ public class Server extends Thread implements Runnable{
 			
 			Socket connectionSocket;
 			//Get IP Address of 'enp0s8'
-			String ipAddress = NetworkAddress.getIPAddress("enp0s8");
+			String ipAddress = NetworkAddress.getIPAddress("enp0s3");
 			//String ipAddress = "192.168.0.36"; //hardcoded for mac
 			// Upload IPAddress:Port number at http://www4.ncsu.edu/~vpkatara/server.txt
 			new UploadToServer().upload(ipAddress, serverPort);
