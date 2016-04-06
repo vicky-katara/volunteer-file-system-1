@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -19,6 +20,7 @@ public class Client {
 	static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
+	static FileMetadata currentDirectory;
 	
 	private Socket socketToServer;
 	
@@ -59,60 +61,77 @@ public class Client {
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
 		
 		// interact with user
-		main_menu();
+		currentDirectory = new FileMetadata();
+		try {
+			main_menu();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// go to command line interface
 	}
 
-	private static void main_menu() {
+	private void main_menu() throws IOException {
+		//assuming space seperators
 		Scanner in = new Scanner(System.in);
-		String parenPattern = "[(](.*)[)]";
-		Pattern open = Pattern.compile("^open"+parenPattern+"$");
-		Pattern close = Pattern.compile("^close"+parenPattern+"$");
-		Pattern read = Pattern.compile("^read"+parenPattern+"$");
-		Pattern write = Pattern.compile("^write"+parenPattern+"$");
-		Pattern mount = Pattern.compile("^mount"+parenPattern+"$");
+		Pattern cd = Pattern.compile("^cd (.*)$"); 				//change directory
+		Pattern mkdir = Pattern.compile("^mkdir (.*)$");		//make directory
+		Pattern mv = Pattern.compile("^mv (.*) (.*)$");			//move (local_file remote_file)
+		Pattern mvb = Pattern.compile("^mvb (.*) (.*)$");		//move back (remote_file local_file)
+		Pattern rm = Pattern.compile("^rm (.*)$");				//remove
+		Pattern rename = Pattern.compile("^rename (.*) (.*)$");	//rename (current_remote_file_name new_remote_file_name)
 		Matcher m;
 		String consoleString = "";
+		//FileMetadata currentDirectory= new FileMetadata();
 
 		while (!consoleString.equals("exit")){
 			// contains the main menu options
-			System.out.println("commands supported: open(),close(),read(),write(),mount(),exit");
+			System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,exit");
 			consoleString = in.nextLine();
 
-			m = open.matcher(consoleString);
+			m = cd.matcher(consoleString);
 			if(m.find()) {
 				String fileName= m.group(1);
-				if (debugFlag) System.out.println("open command called with parameter "+ fileName);
-				open(fileName);
+				if (debugFlag) System.out.println("cd command called with parameter "+ fileName);
+				cd(fileName);
 				continue;
 			}
-			m = close.matcher(consoleString);
+			m = mkdir.matcher(consoleString);
 			if(m.find()) {
 				String fileName= m.group(1);
-				if (debugFlag) System.out.println("close command called with parameter "+ m.group(1));
-				close(fileName);
+				if (debugFlag) System.out.println("mkdir command called with parameter "+ m.group(1));
+				mkdir(fileName);
 				continue;
 			}
-			m = read.matcher(consoleString);
+			m = mv.matcher(consoleString);
 			if(m.find()) {
-				String fileName= m.group(1);
-				if (debugFlag) System.out.println("read command called with parameter "+ m.group(1));
-				read(fileName);
+				String localFileName= m.group(1);
+				String remoteFileName= m.group(2);
+				if (debugFlag) System.out.println("mv command called with parameter "+ m.group(1));
+				mv(localFileName,remoteFileName);
 				continue;
 			}
-			m = write.matcher(consoleString);
+			m = mvb.matcher(consoleString);
 			if(m.find()) {
-				String fileName= m.group(1);
-				if (debugFlag) System.out.println("write command called with parameter "+ m.group(1));
-				write(fileName);
+				String remoteFileName= m.group(1);
+				String localFileName= m.group(2);
+				if (debugFlag) System.out.println("mvb command called with parameter "+ m.group(1));
+				mvb(remoteFileName,localFileName);
 				continue;
 			}
-			m = mount.matcher(consoleString);
+			m = rm.matcher(consoleString);
 			if(m.find()) {
 				String fileName= m.group(1);
-				if (debugFlag) System.out.println("mount command called with parameter "+ m.group(1));
-				mount(fileName);
+				if (debugFlag) System.out.println("rm command called with parameter "+ m.group(1));
+				rm(fileName);
+				continue;
+			}		
+			m = rename.matcher(consoleString);
+			if(m.find()) {
+				String fileName= m.group(1);
+				if (debugFlag) System.out.println("rename command called with parameter "+ m.group(1));
+				rename(fileName);
 				continue;
 			}
 			if (consoleString.equals("exit")){
@@ -128,30 +147,56 @@ public class Client {
 		in.close();
 	}
 
-	private static void mount(String fileName) {
+
+	private static void rename(String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void write(String fileName) {
+	private static void rm(String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void read(String fileName) {
+	private static void mvb(String remoteFileName, String localFileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void close(String fileName) {
+	private static void mv(String localFileName, String remoteFileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void open(String fileName) {
+	private static void mkdir(String fileName) {
 		// TODO Auto-generated method stub
+		
 	}
-	
+
+	private static void cd(String fileName) throws IOException {
+		// TODO Auto-generated method stub
+		if (fileName.equals("..")){
+			File parent = currentDirectory.getCurrentFile().getParentFile();
+			currentDirectory.setCurrentFile(parent);
+			System.out.println(currentDirectory.getCurrentFile().getAbsolutePath());
+		}
+		else if (fileName.contains(""+File.separatorChar)){ //absolute path
+			System.out.println("absolute paths not supported yet.");
+		}
+		else { //relative path
+			String childPath = currentDirectory.getCurrentFile().getAbsolutePath()+File.separatorChar+fileName;
+			File child = new File(childPath);
+			if (child.isDirectory()){
+				currentDirectory.setCurrentFile(child);
+			}
+			else {
+				System.out.println("not a directory:"+child.getAbsolutePath());
+			}
+			System.out.println(currentDirectory.getCurrentFile().getAbsolutePath());
+		}
+		
+	}
+
 	public static void main(String[] args) {
 		try {
 			String[] connectionInfo = new URLReader().getConnectionString().split(":");
