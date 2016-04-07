@@ -20,7 +20,7 @@ public class Client {
 	static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
-	static FileMetadata currentDirectory;
+	static File currentDirectory;
 	
 	private Socket socketToServer;
 	
@@ -61,7 +61,7 @@ public class Client {
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
 		
 		// interact with user
-		currentDirectory = new FileMetadata();
+		currentDirectory = new File(System.getProperty("user.dir"));
 		try {
 			main_menu();
 		} catch (IOException e) {
@@ -170,29 +170,38 @@ public class Client {
 
 	private static void mkdir(String fileName) {
 		// TODO Auto-generated method stub
-		
+		String childPath = currentDirectory.getAbsolutePath()+File.separatorChar+fileName;
+		File newDir=new File(childPath);
+		boolean status = newDir.mkdir();
+		if (status){
+			currentDirectory = newDir;
+		}
+		else {
+			System.out.println("directory creation failed:"+childPath);
+		}
+		System.out.println(currentDirectory.getAbsolutePath());
 	}
 
 	private static void cd(String fileName) throws IOException {
 		// TODO Auto-generated method stub
-		if (fileName.equals("..")){
-			File parent = currentDirectory.getCurrentFile().getParentFile();
-			currentDirectory.setCurrentFile(parent);
-			System.out.println(currentDirectory.getCurrentFile().getAbsolutePath());
+		if (fileName.equals("..")||fileName.equals("../")){
+			File parent = currentDirectory.getParentFile();
+			currentDirectory = parent;
+			System.out.println(currentDirectory.getAbsolutePath());
 		}
 		else if (fileName.contains(""+File.separatorChar)){ //absolute path
 			System.out.println("absolute paths not supported yet.");
 		}
 		else { //relative path
-			String childPath = currentDirectory.getCurrentFile().getAbsolutePath()+File.separatorChar+fileName;
+			String childPath = currentDirectory.getAbsolutePath()+File.separatorChar+fileName;
 			File child = new File(childPath);
 			if (child.isDirectory()){
-				currentDirectory.setCurrentFile(child);
+				currentDirectory = child;
 			}
 			else {
 				System.out.println("not a directory:"+child.getAbsolutePath());
 			}
-			System.out.println(currentDirectory.getCurrentFile().getAbsolutePath());
+			System.out.println(currentDirectory.getAbsolutePath());
 		}
 		
 	}
