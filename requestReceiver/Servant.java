@@ -56,7 +56,7 @@ public class Servant extends Thread{
 	
 	Chunk getRequestedChunk(String fileName){
 		try {
-			byte[] b = new byte[256];
+			byte[] b = new byte[Chunk.CHUNK_SIZE];
 			RandomAccessFile raf = new RandomAccessFile(pathToDir+File.separatorChar+fileName, "r");// doesn't have to be done every time!
 			raf.read(b);
 			raf.close();

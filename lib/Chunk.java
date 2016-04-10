@@ -3,12 +3,19 @@ package lib;
 import java.util.Arrays;
 
 public class Chunk implements Comparable<Chunk>{
-	String chunkName;
-	String byteString;
+	String chunkName, byteString;
+	// This is the statically set CHUNK_SIZE
+	public static int CHUNK_SIZE = 256;
 	
 	public Chunk(byte[] b){
 		this.byteString = Arrays.toString(b);
 	}
+	
+	public Chunk(String chunkName, byte[] b){
+		this.chunkName = chunkName;
+		this.byteString = Arrays.toString(b);
+	}
+	
 	Chunk(String byteString){
 		this.byteString = byteString;
 	}
