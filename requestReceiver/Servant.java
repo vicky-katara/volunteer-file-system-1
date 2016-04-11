@@ -8,6 +8,11 @@ import java.io.RandomAccessFile;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.UnknownHostException;
+import java.nio.file.DirectoryNotEmptyException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 
 import lib.Chunk;
 import lib.Peer;
@@ -18,7 +23,7 @@ public class Servant extends Thread{
 
 	DatagramPacket udpDatagram;
 	DatagramSocket socketOnWhichToSend;
-	String pathToDir;
+	static String pathToDir;
 	Servant(DatagramPacket fromRequestor, DatagramSocket onWhichToSend){
 		this.udpDatagram = fromRequestor;
 		this.socketOnWhichToSend = onWhichToSend;
@@ -36,13 +41,16 @@ public class Servant extends Thread{
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(101, "").getPayload());
 				} else if(receivedPacket.getOption()==102) {
 					String chunkName = receivedPacket.getData();
-					Chunk chunkToBeReturned = getRequestedChunk(chunkName);
+					Chunk chunkToBeReturned = getRequestedChunk(chunkName+udpDatagram.getAddress().toString());
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(103, receivedPacket.getData()+":"+chunkToBeReturned).getPayload());
 				} else if(receivedPacket.getOption()==104) {
 					String[] splitted = receivedPacket.getData().split(":");
-					Chunk toBeStored = new Chunk(splitted[0], splitted[1]);
+					Chunk toBeStored = new Chunk(splitted[0]+udpDatagram.getAddress().toString(), splitted[1]);
 					storeChunk(toBeStored);
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(105, splitted[0]).getPayload());
+				} else if(receivedPacket.getOption()==106){
+					deleteFile(receivedPacket.getData()+udpDatagram.getAddress().toString());
+					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(107, receivedPacket.getData()).getPayload());
 				} else {
 					throw new Exception("receivedPacket has option "+receivedPacket.getOption()+" : Servant.run() --> "+receivedPacket);
 				}
@@ -69,6 +77,20 @@ public class Servant extends Thread{
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	void deleteFile(String fileName){
+		Path deleteFilePath = FileSystems.getDefault().getPath(pathToDir+File.separatorChar+fileName);
+		try {
+			Files.delete(deleteFilePath);
+		} catch (NoSuchFileException x) {
+		    System.err.format("%s: no such" + " file or directory%n", deleteFilePath);
+		} catch (DirectoryNotEmptyException x) {
+		    System.err.format("%s not empty%n", deleteFilePath);
+		} catch (IOException x) {
+		    // File permission problems are caught here.
+		    System.err.println(x);
+		}
 	}
 	
 	void storeChunk(Chunk toBeStored){

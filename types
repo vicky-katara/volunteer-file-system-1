@@ -57,3 +57,18 @@ Type 105: requestReceiver sends back the confirmation with the chunkName.
 		|type|105|/type||data|<chunkName>|data|
 	Example:
 		|type|105|/type||data|CS87ASNSKAJDN|data|
+		
+Type 106: requestor asks requestReceiver to delete the chunk with ChunkName.
+
+	Format:
+		|type|104|/type||data|<chunkName>|data|
+	Example:
+		|type|104|/type||data|CS87ASNSKAJDN|data|
+		
+Type 107: requestReceiver sends back the confirmation of deletion with the chunkName.
+
+	Format:
+		|type|107|/type||data|<chunkName>|data|
+	Example:
+		|type|107|/type||data|CS87ASNSKAJDN|data|
+		
