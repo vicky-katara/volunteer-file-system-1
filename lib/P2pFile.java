@@ -29,6 +29,11 @@ public class P2pFile {
 		this.chunkList = downladedChunkList;	
 	}
 	
+	public P2pFile(FileMetaData oldMetaData) {
+		this.metadata = oldMetaData;
+		this.chunkList = new ArrayList<>(this.metadata.numChunks);	
+	}
+	
 	ArrayList<Chunk> getChunkList() {
 		return this.chunkList;
 	}
