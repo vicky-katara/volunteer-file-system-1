@@ -26,8 +26,8 @@ public class Client {
 	
 	Client(String serverIP, int portNumber){
 		// Set self IP Address
-		Client.selfIpAddress = "192.168.0.44"; //- for mac
-		//Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s8");
+		//Client.selfIpAddress = "192.168.0.44"; //- for mac
+		Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s3");
 		
 		// Connect to the Server and ask for host names available to store files.
 		System.out.println("Connecting to server at "+serverIP+":"+portNumber);
