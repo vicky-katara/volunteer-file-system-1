@@ -7,13 +7,26 @@ Type 0: Client sends it's own information to the server
 	Example:
 		|type|0|/type||data|192.168.56.1:7777|data|
 
+Type 1: Server replies OK.
+
+	Format:
+		|type|1|/type||data||data|
+	Example:
+		|type|1|/type||data||data|
 		
-Type 1: Server replies with a list of clients available to store data, including this client.
+Type 2: Client asks Server for a list of available Peers.
+
+	Format:
+		|type|2|/type||data||data|
+	Example:
+		|type|2|/type||data||data|
+
+Type 3: Server replies with a list of clients available to store data, including this client.
 	
 	Format:
-		|type|1|/type||data|<IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>;|data|
+		|type|3|/type||data|<IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>; <IPAddress>:<Port Listening On>;|data|
 	Example:
-		|type|1|/type||data|192.168.56.1:7777;192.168.56.2:7777;192.168.56.3:7777;192.168.56.4:7777;|data|
+		|type|3|/type||data|192.168.56.1:7777;192.168.56.2:7777;192.168.56.3:7777;192.168.56.4:7777;|data|
 		
 Type 100: requestor asks requestReceiver whether it is on.
 
