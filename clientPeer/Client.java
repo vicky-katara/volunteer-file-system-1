@@ -15,8 +15,6 @@ import requestReceiver.RequestReceiver;
 
 public class Client {
 	
-	ArrayList<Peer> peerList = new ArrayList<Peer>();
-	
 	static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
@@ -40,6 +38,32 @@ public class Client {
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
 		
+		// Receive Ok from the indexServer
+		Packet type1Packet = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer));
+		if(type1Packet.getOption() != 1){
+			System.err.println("Incorrect packet recieved: "+type1Packet);
+			System.exit(-1);
+		}
+		
+		// interact with user
+		currentDirectory = new File(System.getProperty("user.dir"));
+		try {
+			main_menu();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// go to command line interface
+	}
+	
+	ArrayList<Peer> getAvailablePeerList() {
+		String portNumberPayload = new Packet(2, "").getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
+		// send payload via TCP to server
+		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
+		
+		ArrayList<Peer> peerList = new ArrayList<Peer>();
+		
 		// receive list of all IP Addresses and Port Numbers from Server 
 		String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
 		
@@ -58,17 +82,7 @@ public class Client {
 		
 		// Available list
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
-		
-		// interact with user
-		currentDirectory = new File(System.getProperty("user.dir"));
-		try {
-			main_menu();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		// go to command line interface
+		return peerList;
 	}
 
 	private void main_menu() throws IOException {
