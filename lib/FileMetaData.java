@@ -10,47 +10,6 @@ import java.io.FileOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-class ChunkTriplePeer implements Serializable{
-	private static final long serialVersionUID = -2610681546566455003L;
-	String chunkName;
-	Peer one;
-	Peer two;
-	Peer three;
-
-	ChunkTriplePeer(String chunkName, Peer one, Peer two, Peer three){
-		this.chunkName = chunkName;
-		this.one = one;
-		this.two = two;
-		this.three = three;
-	}
-
-	public ChunkTriplePeer() {
-
-	}
-
-	public ChunkTriplePeer(String chunkName) {
-		this.chunkName = chunkName;
-	}
-
-	void setChunkName(String chunkName) {
-		this.chunkName = chunkName;
-	}
-
-	void setPrimaryPeer(Peer x){
-		this.one = x;
-	}
-	void setSecondaryPeer(Peer x){
-		this.two = x;
-	}
-	void setTertiaryPeer(Peer x){
-		this.three = x;
-	}
-
-	public String toString(){
-		return "["+chunkName+"-"+one+"-"+two+"-"+three+"]";
-	}
-}
-
 public class FileMetaData implements Serializable{
 	private static final long serialVersionUID = 5470463765499328330L; //for serializing.
 	String fileName;
@@ -92,6 +51,10 @@ public class FileMetaData implements Serializable{
 	
 	public ArrayList<ChunkTriplePeer> returnChunkPeer(){
 		return chunkPeerList;
+	}
+	
+	public ChunkTriplePeer getChunkPeerNumber(int number){
+		return chunkPeerList.get(number);
 	}
 	
 

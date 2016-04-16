@@ -22,11 +22,14 @@ public class Requester extends Thread{
 	private FileMetaData metadata;
 	private ArrayList<Chunk> chunkList;
 	private String[] splitted;
+	private ArrayList<Peer> availablePeers;
+	private int lastPeerIndex = 0;
 	//private ArrayList<ChunkTriplePeer> chunkPeerList;
 	
 	//Refer types 100, 101
 	public boolean checkIfPeerIsUp(Peer p){
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(100, "").getPayload());
+		//SAMMMMMMMMMMM Timer -- 
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
 		if(receivedPacket.getType()==101) {
 			return true;
@@ -63,21 +66,7 @@ public class Requester extends Thread{
 		}
 		
 	}
-		
-	
-	//Refer types 104, 105
-	public void push(Peer p, Chunk c)throws Exception{
-		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(104,c.getChunkName()+":"+c.returnBytes()).getPayload());
-		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getType()==105 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
-			System.out.println("Chunk inserted");
-			//Update metadata here
-		} else {
-			throw new Exception("Reply not expected");
-		}
-	}
-	
-	
+			
 	//Refer types 106, 107
 	public void delete(Peer p, Chunk c) throws Exception{
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(106,c.getChunkName()).getPayload());
@@ -90,11 +79,64 @@ public class Requester extends Thread{
 		
 	}
 	
-	public void populate(P2pFile p2p){
+	//Push 
+	public void pushFile(P2pFile p2p, ArrayList<Peer> availablePeers){
 		chunkList = p2p.getChunkList();
 		metadata = p2p.getMetadata();
+		this.availablePeers = availablePeers;
+		
+		for(int chunkIndex=0; chunkIndex<chunkList.size();chunkIndex++){
+			
+			for(int replicaNumber = 1; replicaNumber <=3 ; replicaNumber++){
+				Peer toSend = returnNextPeer();
+				if(checkIfPeerIsUp(toSend)){
+					metadata.getChunkPeerNumber(chunkIndex).setPeerNumber(replicaNumber, toSend);
+					push(toSend, chunkList.get(chunkIndex));
+				} else {
+					availablePeers.remove(toSend);
+					if(availablePeers.size()<3){
+						System.err.println("Not enough peers for triple replication");
+						return;
+					}
+					chunkIndex--;
+					continue;
+				}
+			}
+
+		}		
+		
 	}
 	
+	//Refer types 104, 105
+	public void push(Peer p, Chunk c){
+		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(104,c.getChunkName()+":"+c.returnBytes()).getPayload());
+		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
+		if(receivedPacket.getType()==105 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
+			System.out.println("Chunk inserted");
+			//Update metadata here
+		} else {
+			try {
+				throw new Exception("Reply not expected");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public Peer returnNextPeer(){
+		return availablePeers.get((lastPeerIndex+1)%availablePeers.size());
+	}
+	
+	//Fetch 
+	public void fetchFile(P2pFile p2p){
+		
+	}
+	
+	//Delete
+	public void deleteFile(P2pFile p2p){
+		
+	}
 	public static void main(String[] args){
 		
 	}
