@@ -34,23 +34,39 @@ public class Requester extends Thread{
 		return false;
 	}
 	
-	//round robin 
-	public void RoundRobin(ArrayList<Peer> p){
-		RoundRobin<Peer> p4 = new RoundRobin<Peer>(p);
-		Iterator it = p4.iterator();
-		//System.out.println(it.next());
-		
-	}
+
 	//Refer type 102, 103
-	public String getChunkList(String chunkname, Peer p) throws Exception{
+	public void getChunkList(String chunkname, Peer p, ArrayList<Peer> availablePeers) throws Exception{
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(102,chunkname).getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
 		if(receivedPacket.getOption()==103) {
 			splitted = receivedPacket.getData().split(":");
+			chunkname = splitted[0];
+			Chunk toDistribute = new Chunk(chunkname, splitted[1]);
+			byte[] chunksRetrieved = toDistribute.returnBytes();
+			
+			RoundRobin<Peer> p4 = new RoundRobin<Peer>(availablePeers);
+			Iterator it = p4.iterator();
+			int chunkIndex = 0;
+			while(chunkIndex != chunksRetrieved.length-1) {
+				//for each chunk, find peer using round robin
+				//send store request to that peer
+				Peer toSend = (Peer) it.next();
+				if(checkIfPeerIsUp(toSend)){
+					//100, 101 - passed
+					chunkIndex++;
+					//104, 105
+					Chunk c = new Chunk(chunkname,String.valueOf(chunksRetrieved[chunkIndex]));
+					push(toSend, c);
+				} else {
+					////100, 101 - failed
+					System.out.println(toSend.getIpAddress()+"is down!");
+				}	
+			}	
 		} else {
 			throw new Exception("ACK not received");
 		}
-		return splitted[1];
+		
 	}
 		
 	
@@ -60,6 +76,7 @@ public class Requester extends Thread{
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
 		if(receivedPacket.getOption()==105 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
 			System.out.println("Chunk inserted");
+			//Update metadata here
 		} else {
 			throw new Exception("Reply not expected");
 		}
@@ -68,7 +85,6 @@ public class Requester extends Thread{
 	
 	//Refer types 106, 107
 	public void delete(Peer p, Chunk c) throws Exception{
-		
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(106,c.getChunkName()).getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
 		if(receivedPacket.getOption()==107 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
@@ -95,7 +111,6 @@ public class Requester extends Thread{
 		public RoundRobin(ArrayList<Peer> peers){
 			this.peers = peers;
 		}
-		
 		@Override
 		public Iterator<Peer> iterator() {
 			return new Iterator<Peer>(){
@@ -103,18 +118,15 @@ public class Requester extends Thread{
 				
 				public Peer next(){
 					Peer curr = peers.get(index);
-					System.out.println(index);
+					//System.out.println(index);
 					index = (index+1)%peers.size();
 					return curr;
 				}
-
 				@Override
 				public boolean hasNext() {
 					// TODO Auto-generated method stub
 					return true;
 				}
-				
-				
 			};
 		}
 		
