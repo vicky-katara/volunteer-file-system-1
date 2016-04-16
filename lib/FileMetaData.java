@@ -78,6 +78,12 @@ public class FileMetaData implements Serializable{
 			e.printStackTrace();
 		}
 	}
+	
+	public ArrayList<ChunkTriplePeer> returnChunkPeer(){
+		return chunkPeerList;
+	}
+	
+
 	public static FileMetaData getFileMetadata(String path){
 		FileMetaData metadata = null;
 		try
