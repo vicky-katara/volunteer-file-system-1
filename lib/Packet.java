@@ -15,7 +15,7 @@ public class Packet {
 		this.data = data;
 	}
 	
-	public int getOption(){
+	public int getType(){
 		return this.type;
 	}
 	

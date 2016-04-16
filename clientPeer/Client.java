@@ -40,7 +40,7 @@ public class Client {
 		
 		// Receive Ok from the indexServer
 		Packet type1Packet = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer));
-		if(type1Packet.getOption() != 1){
+		if(type1Packet.getType() != 1){
 			System.err.println("Incorrect packet recieved: "+type1Packet);
 			System.exit(-1);
 		}

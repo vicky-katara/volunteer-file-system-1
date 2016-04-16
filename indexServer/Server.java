@@ -29,7 +29,7 @@ public class Server extends Thread implements Runnable{
 			Packet payloadFromClient = new Packet(new SenderReceiver().receiveMessageViaTCPOn(clientSocket));
 			
 			//Get option from client
-			int clientOption = payloadFromClient.getOption();
+			int clientOption = payloadFromClient.getType();
 
 			switch(clientOption){
 			case 0:

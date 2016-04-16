@@ -28,7 +28,7 @@ public class Requester extends Thread{
 	public boolean checkIfPeerIsUp(Peer p){
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(100, "").getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getOption()==101) {
+		if(receivedPacket.getType()==101) {
 			return true;
 		}
 		return false;
@@ -39,7 +39,7 @@ public class Requester extends Thread{
 	public void getChunkList(String chunkname, Peer p, ArrayList<Peer> availablePeers) throws Exception{
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(102,chunkname).getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getOption()==103) {
+		if(receivedPacket.getType()==103) {
 			splitted = receivedPacket.getData().split(":");
 			chunkname = splitted[0];
 			Chunk toDistribute = new Chunk(chunkname, splitted[1]);
@@ -69,7 +69,7 @@ public class Requester extends Thread{
 	public void push(Peer p, Chunk c)throws Exception{
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(104,c.getChunkName()+":"+c.returnBytes()).getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getOption()==105 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
+		if(receivedPacket.getType()==105 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
 			System.out.println("Chunk inserted");
 			//Update metadata here
 		} else {
@@ -82,7 +82,7 @@ public class Requester extends Thread{
 	public void delete(Peer p, Chunk c) throws Exception{
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(106,c.getChunkName()).getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getOption()==107 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
+		if(receivedPacket.getType()==107 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
 			System.out.println("Chunk deleted");
 		} else {
 			throw new Exception("Reply not expected");

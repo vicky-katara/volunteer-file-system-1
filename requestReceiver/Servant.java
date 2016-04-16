@@ -37,22 +37,22 @@ public class Servant extends Thread{
 		//while(true){
 			try {
 				receivedPacket = new Packet(new String(udpDatagram.getData()));
-				if(receivedPacket.getOption()==100) {
+				if(receivedPacket.getType()==100) {
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(101, "").getPayload());
-				} else if(receivedPacket.getOption()==102) {
+				} else if(receivedPacket.getType()==102) {
 					String chunkName = receivedPacket.getData();
 					Chunk chunkToBeReturned = getRequestedChunk(chunkName+udpDatagram.getAddress().toString());
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(103, receivedPacket.getData()+":"+chunkToBeReturned).getPayload());
-				} else if(receivedPacket.getOption()==104) {
+				} else if(receivedPacket.getType()==104) {
 					String[] splitted = receivedPacket.getData().split(":");
 					Chunk toBeStored = new Chunk(splitted[0]+udpDatagram.getAddress().toString(), splitted[1]);
 					storeChunk(toBeStored);
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(105, splitted[0]).getPayload());
-				} else if(receivedPacket.getOption()==106){
+				} else if(receivedPacket.getType()==106){
 					deleteFile(receivedPacket.getData()+udpDatagram.getAddress().toString());
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(107, receivedPacket.getData()).getPayload());
 				} else {
-					throw new Exception("receivedPacket has option "+receivedPacket.getOption()+" : Servant.run() --> "+receivedPacket);
+					throw new Exception("receivedPacket has option "+receivedPacket.getType()+" : Servant.run() --> "+receivedPacket);
 				}
 			}
 			catch(NullPointerException npe){
