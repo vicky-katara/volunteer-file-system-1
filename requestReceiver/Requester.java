@@ -49,17 +49,12 @@ public class Requester extends Thread{
 			Iterator it = p4.iterator();
 			int chunkIndex = 0;
 			while(chunkIndex != chunksRetrieved.length-1) {
-				//for each chunk, find peer using round robin
-				//send store request to that peer
 				Peer toSend = (Peer) it.next();
 				if(checkIfPeerIsUp(toSend)){
-					//100, 101 - passed
-					//104, 105
 					Chunk c = new Chunk(chunkname,String.valueOf(chunksRetrieved[chunkIndex]));
 					chunkIndex++;
 					push(toSend, c);
 				} else {
-					////100, 101 - failed
 					System.out.println(toSend.getIpAddress()+"is down!");
 				}	
 			}	
