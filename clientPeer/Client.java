@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import lib.NetworkAddress;
+import lib.P2pFile;
 import lib.Packet;
 import lib.Peer;
 import lib.SenderReceiver;
@@ -98,9 +99,9 @@ public class Client {
 		String consoleString = "";
 		//FileMetadata currentDirectory= new FileMetadata();
 
+		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,help,exit");
 		while (!consoleString.equals("exit")){
 			// contains the main menu options
-			System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,exit");
 			consoleString = in.nextLine();
 
 			m = cd.matcher(consoleString);
@@ -152,6 +153,15 @@ public class Client {
 				//System.exit(0);
 				break;
 			}
+			if (consoleString.equals("pwd")){
+				System.out.println(currentDirectory.getAbsolutePath());
+				//System.exit(0);
+				break;
+			}
+			if (consoleString.equals("help")){
+				helpMessage();
+				break;
+			}
 			//catchall
 			System.out.println("command "+consoleString+"not recognized, please try again.");
 		
@@ -160,6 +170,22 @@ public class Client {
 		in.close();
 	}
 
+
+	private void helpMessage() {
+		System.out.println("list of commands");
+
+		System.out.println("cd .* 			//change directory");
+		System.out.println("mkdir .*		//make directory");
+		System.out.println("mv .* .*		//move file onto remote servers (local_file remote_file)");
+		System.out.println("mvb .* .*		//move file back to local client(remote_file local_file)");
+		System.out.println("rm .*			//remove from remote servers");
+		System.out.println("rename .* .*		//rename (current_remote_file_name new_remote_file_name)");
+		System.out.println("pwd			//shows current directory");
+		System.out.println("help			//shows this message");
+		System.out.println("exit			//exits");
+		
+		
+	}
 
 	private static void rename(String fileName) {
 		// TODO Auto-generated method stub
@@ -178,6 +204,7 @@ public class Client {
 
 	private static void mv(String localFileName, String remoteFileName) {
 		// TODO Auto-generated method stub
+		P2pFile p2pf = new P2pFile(localFileName);
 		
 	}
 
