@@ -104,6 +104,7 @@ public class Client {
 		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,help,exit");
 		while (!consoleString.equals("exit")){
 			// contains the main menu options
+			System.out.println(">");
 			consoleString = in.nextLine();
 
 			m = cd.matcher(consoleString);
@@ -158,12 +159,11 @@ public class Client {
 			}
 			if (consoleString.equals("pwd")){
 				System.out.println(currentDirectory.getAbsolutePath());
-				//System.exit(0);
-				break;
+				continue;
 			}
 			if (consoleString.equals("help")){
 				helpMessage();
-				break;
+				continue;
 			}
 			//catchall
 			System.out.println("command "+consoleString+"not recognized, please try again.");
