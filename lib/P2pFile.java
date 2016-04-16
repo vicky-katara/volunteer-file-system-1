@@ -66,6 +66,20 @@ public class P2pFile {
 		return null;
 	}
 	
+	byte[] getCoalescedBytes() {
+		ArrayList<Byte> byteList = new ArrayList<>(this.metadata.numChunks*Chunk.CHUNK_SIZE);
+		for(int chunkNumber=0; chunkNumber<this.metadata.numChunks; chunkNumber++){
+			byte[] bytesInChunk = chunkList.get(chunkNumber).returnBytes();
+			for(int byteNumber = 0; byteNumber<bytesInChunk.length; byteNumber++)
+				byteList.add(bytesInChunk[byteNumber]);
+		}
+		
+		byte[] toBeReturned = new byte[byteList.size()];
+		for(int byteNumber = 0; byteNumber<toBeReturned.length; byteNumber++)
+			toBeReturned[byteNumber] = byteList.get(byteNumber);
+		return toBeReturned;
+	}
+	
 	public String toString() {
 		return "Metadata:"+this.metadata+" / Chunks:"+this.chunkList;
 	}
