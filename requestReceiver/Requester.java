@@ -54,9 +54,9 @@ public class Requester extends Thread{
 				Peer toSend = (Peer) it.next();
 				if(checkIfPeerIsUp(toSend)){
 					//100, 101 - passed
-					chunkIndex++;
 					//104, 105
 					Chunk c = new Chunk(chunkname,String.valueOf(chunksRetrieved[chunkIndex]));
+					chunkIndex++;
 					push(toSend, c);
 				} else {
 					////100, 101 - failed
