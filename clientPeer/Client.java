@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.omg.CORBA.Request;
+
 import lib.FileMetaData;
 import lib.NetworkAddress;
 import lib.P2pFile;
@@ -14,6 +16,7 @@ import lib.Packet;
 import lib.Peer;
 import lib.SenderReceiver;
 import requestReceiver.RequestReceiver;
+import requestReceiver.Requester;
 
 public class Client {
 	
@@ -218,7 +221,8 @@ public class Client {
 		}
 		P2pFile p2pf = new P2pFile(absolutePath);
 		ArrayList<Peer> availablePeerList = getAvailablePeerList();
-		
+		Requester requestObject = new Requester();
+		requestObject.pushFile(p2pf, availablePeerList);
 		
 	}
 
