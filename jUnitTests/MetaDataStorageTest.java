@@ -22,7 +22,7 @@ public class MetaDataStorageTest {
 	@Test
 	public void testStoreFileMetaData() {
 		String directory = "";
-		FileMetaData.StoreFileMetaData(directory, metadata);
+		FileMetaData.StoreFileMetaDataDirectory(directory, metadata);
 		File storedData = new File(testFileName); 
 		assertTrue(storedData.exists());
 	}
@@ -30,7 +30,7 @@ public class MetaDataStorageTest {
 	@Test
 	public void testGetFileMetadata() {
 		String directory = "";
-		FileMetaData.StoreFileMetaData(directory, metadata);
+		FileMetaData.StoreFileMetaDataDirectory(directory, metadata);
 		File storedData = new File(testFileName); 
 		assertTrue(storedData.exists());
 		FileMetaData retrievedFileMetaData;

@@ -54,13 +54,24 @@ class ChunkTriplePeer implements Serializable{
 public class FileMetaData implements Serializable{
 	private static final long serialVersionUID = 5470463765499328330L; //for serializing.
 	String fileName;
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
 	ArrayList<ChunkTriplePeer> chunkPeerList;
 	int numChunks;
 
-	public static void StoreFileMetaData(String directory, FileMetaData metadata){
+	public static void StoreFileMetaDataDirectory(String directory, FileMetaData metadata){
 		String path;
 		if (directory.equals("")) path=metadata.fileName;
 		else path = directory+File.separatorChar+metadata.fileName;
+		StoreFileMetaDataFile(path, metadata);
+	}
+	public static void StoreFileMetaDataFile(String path, FileMetaData metadata){
 		
 		FileOutputStream fileOut;
 		try {

@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
+import lib.FileMetaData;
 import lib.NetworkAddress;
 import lib.P2pFile;
 import lib.Packet;
@@ -144,8 +145,9 @@ public class Client {
 			m = rename.matcher(consoleString);
 			if(m.find()) {
 				String fileName= m.group(1);
-				if (debugFlag) System.out.println("rename command called with parameter "+ m.group(1));
-				rename(fileName);
+				String newName= m.group(2);
+				if (debugFlag) System.out.println("rename command called with parameter "+ m.group(1)+", "+ m.group(2));
+				rename(fileName,newName);
 				continue;
 			}
 			if (consoleString.equals("exit")){
@@ -187,9 +189,13 @@ public class Client {
 		
 	}
 
-	private void rename(String fileName) {
+	private void rename(String fileName, String newName) {
 		// TODO Auto-generated method stub
-		
+		FileMetaData fmd= FileMetaData.getFileMetadata(getAbsolutePath(fileName));
+		File oldfile = new File(getAbsolutePath(fileName));
+		fmd.setFileName(getAbsolutePath(newName));
+		FileMetaData.StoreFileMetaDataFile(getAbsolutePath(fileName), fmd);
+		oldfile.delete();
 	}
 
 	private void rm(String fileName) {
@@ -204,7 +210,7 @@ public class Client {
 
 	private void mv(String localFileName, String remoteFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= currentDirectory.getAbsolutePath()+File.separatorChar+localFileName;
+		String absolutePath= getAbsolutePath(localFileName);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
@@ -218,7 +224,7 @@ public class Client {
 
 	private void mkdir(String fileName) {
 		// TODO Auto-generated method stub
-		String childPath = currentDirectory.getAbsolutePath()+File.separatorChar+fileName;
+		String childPath = getAbsolutePath(fileName);
 		File newDir=new File(childPath);
 		boolean status = newDir.mkdir();
 		if (status){
@@ -241,7 +247,7 @@ public class Client {
 			System.out.println("absolute paths not supported yet.");
 		}
 		else { //relative path
-			String childPath = currentDirectory.getAbsolutePath()+File.separatorChar+fileName;
+			String childPath = getAbsolutePath(fileName);
 			File child = new File(childPath);
 			if (child.isDirectory()){
 				currentDirectory = child;
@@ -254,6 +260,16 @@ public class Client {
 		
 	}
 
+	private String getAbsolutePath(String fileName) {
+		if (fileName.startsWith(File.separatorChar+"")){//already absolute
+			return fileName;
+		}
+		else{
+			return currentDirectory.getAbsolutePath()+File.separatorChar+fileName;	
+		}
+	}
+
+	
 	public static void main(String[] args) {
 		try {
 			String[] connectionInfo = new URLReader().getConnectionString().split(":");
