@@ -22,6 +22,7 @@ public class Requester extends Thread{
 	private FileMetaData metadata;
 	private ArrayList<Chunk> chunkList;
 	private String[] splitted;
+	private ArrayList<Peer> availablePeers;
 	//private ArrayList<ChunkTriplePeer> chunkPeerList;
 	
 	//Refer types 100, 101
@@ -90,9 +91,10 @@ public class Requester extends Thread{
 		
 	}
 	
-	public void populate(P2pFile p2p){
+	public void push(P2pFile p2p, ArrayList<Peer> availablePeers){
 		chunkList = p2p.getChunkList();
 		metadata = p2p.getMetadata();
+		this.availablePeers = availablePeers;
 	}
 	
 	public static void main(String[] args){
