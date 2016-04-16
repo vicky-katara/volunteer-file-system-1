@@ -187,28 +187,36 @@ public class Client {
 		
 	}
 
-	private static void rename(String fileName) {
+	private void rename(String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void rm(String fileName) {
+	private void rm(String fileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void mvb(String remoteFileName, String localFileName) {
+	private void mvb(String remoteFileName, String localFileName) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void mv(String localFileName, String remoteFileName) {
+	private void mv(String localFileName, String remoteFileName) {
 		// TODO Auto-generated method stub
-		P2pFile p2pf = new P2pFile(localFileName);
+		String absolutePath= currentDirectory.getAbsolutePath()+File.separatorChar+localFileName;
+		File localFile = new File(absolutePath);
+		if (!localFile.exists()){
+			System.err.println("file not found, exiting");
+			return;
+		}
+		P2pFile p2pf = new P2pFile(absolutePath);
+		ArrayList<Peer> availablePeerList = getAvailablePeerList();
+		
 		
 	}
 
-	private static void mkdir(String fileName) {
+	private void mkdir(String fileName) {
 		// TODO Auto-generated method stub
 		String childPath = currentDirectory.getAbsolutePath()+File.separatorChar+fileName;
 		File newDir=new File(childPath);
@@ -222,7 +230,7 @@ public class Client {
 		System.out.println(currentDirectory.getAbsolutePath());
 	}
 
-	private static void cd(String fileName) throws IOException {
+	private void cd(String fileName) throws IOException {
 		// TODO Auto-generated method stub
 		if (fileName.equals("..")||fileName.equals("../")){
 			File parent = currentDirectory.getParentFile();
