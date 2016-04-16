@@ -30,17 +30,18 @@ public class Server extends Thread implements Runnable{
 			
 			//Get option from client
 			int clientOption = payloadFromClient.getOption();
-			//Get port, ip address from client
-			String[] clientInformation = payloadFromClient.getData().split(":");
-			String clientIPaddress = clientInformation[0];
-			int clientPortNumber = Integer.parseInt(clientInformation[1]);
-			addToHash(clientIPaddress, clientPortNumber);
-			viewCurrentHash();
-			
+
 			switch(clientOption){
 			case 0:
+				new SenderReceiver().sendMesssageViaTCPOn(clientSocket,new Packet(1,"").toString());
 				break;
 			case 1:
+				//Get port, ip address from client
+				String[] clientInformation = payloadFromClient.getData().split(":");
+				String clientIPaddress = clientInformation[0];
+				int clientPortNumber = Integer.parseInt(clientInformation[1]);
+				addToHash(clientIPaddress, clientPortNumber);
+				viewCurrentHash();
 				//Send current list of active peers to requesting client
 				Packet packetFromServer = new Packet(clientOption, allActivePeersHash());
 				String payloadFromServer = packetFromServer.getPayload();
