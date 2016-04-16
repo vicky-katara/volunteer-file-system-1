@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.omg.CORBA.Request;
-
 import lib.FileMetaData;
 import lib.NetworkAddress;
 import lib.P2pFile;
@@ -95,8 +93,8 @@ public class Client {
 		Scanner in = new Scanner(System.in);
 		Pattern cd = Pattern.compile("^cd (.*)$"); 				//change directory
 		Pattern mkdir = Pattern.compile("^mkdir (.*)$");		//make directory
-		Pattern mv = Pattern.compile("^mv (.*) (.*)$");			//move (local_file remote_file)
-		Pattern mvb = Pattern.compile("^mvb (.*) (.*)$");		//move back (remote_file local_file)
+		Pattern mv = Pattern.compile("^mv (.*)$");			//move (local_file remote_file)
+		Pattern mvb = Pattern.compile("^mvb (.*)$");		//move back (remote_file local_file)
 		Pattern rm = Pattern.compile("^rm (.*)$");				//remove
 		Pattern rename = Pattern.compile("^rename (.*) (.*)$");	//rename (current_remote_file_name new_remote_file_name)
 		Matcher m;
@@ -127,7 +125,7 @@ public class Client {
 				String localFileName= m.group(1);
 				String remoteFileName= m.group(2);
 				if (debugFlag) System.out.println("mv command called with parameter "+ m.group(1));
-				mv(localFileName,remoteFileName);
+				mv(localFileName);
 				continue;
 			}
 			m = mvb.matcher(consoleString);
@@ -135,7 +133,7 @@ public class Client {
 				String remoteFileName= m.group(1);
 				String localFileName= m.group(2);
 				if (debugFlag) System.out.println("mvb command called with parameter "+ m.group(1));
-				mvb(remoteFileName,localFileName);
+				mvb(localFileName);
 				continue;
 			}
 			m = rm.matcher(consoleString);
@@ -181,8 +179,8 @@ public class Client {
 
 		System.out.println("cd .* 			//change directory");
 		System.out.println("mkdir .*		//make directory");
-		System.out.println("mv .* .*		//move file onto remote servers (local_file remote_file)");
-		System.out.println("mvb .* .*		//move file back to local client(remote_file local_file)");
+		System.out.println("mv .*		//move file onto remote servers (local_file remote_file)");
+		System.out.println("mvb .*		//move file back to local client(remote_file local_file)");
 		System.out.println("rm .*			//remove from remote servers");
 		System.out.println("rename .* .*		//rename (current_remote_file_name new_remote_file_name)");
 		System.out.println("pwd			//shows current directory");
@@ -203,15 +201,32 @@ public class Client {
 
 	private void rm(String fileName) {
 		// TODO Auto-generated method stub
-		
+		String absolutePath= getAbsolutePath(fileName);
+		File localFile = new File(absolutePath);
+		if (!localFile.exists()){
+			System.err.println("file not found, exiting");
+			return;
+		}
+		P2pFile p2pf = new P2pFile(absolutePath);
+		Requester requestObject = new Requester();
+		requestObject.deleteFile(p2pf);
+
 	}
 
-	private void mvb(String remoteFileName, String localFileName) {
+	private void mvb(String localFileName) {
 		// TODO Auto-generated method stub
-		
+		String absolutePath= getAbsolutePath(localFileName);
+		File localFile = new File(absolutePath);
+		if (!localFile.exists()){
+			System.err.println("file not found, exiting");
+			return;
+		}
+		P2pFile p2pf = new P2pFile(absolutePath);
+		Requester requestObject = new Requester();
+		requestObject.fetchFile(p2pf);
 	}
 
-	private void mv(String localFileName, String remoteFileName) {
+	private void mv(String localFileName) {
 		// TODO Auto-generated method stub
 		String absolutePath= getAbsolutePath(localFileName);
 		File localFile = new File(absolutePath);
