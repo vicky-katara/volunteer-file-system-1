@@ -52,10 +52,14 @@ public class P2pFile {
 				throw new Exception("Required chunk number "+chunkNumber+" does not exist in "+metadata.fileName);
 			}
 			raf.seek(chunkNumber*256);
-			raf.read(b);
+			int numBytesRead = raf.read(b);
+			System.out.println("RAF read "+numBytesRead+" bytes of data into array of size "+b.length);
 			//System.out.println(Arrays.toString(b).replace("[", "").replace("]", "").replace(", ", newChar));
 			raf.close();
-			return new Chunk(Integer.toString(b.hashCode()), b);
+			byte[] bytesRead = new byte[numBytesRead];
+			System.arraycopy(b, 0, bytesRead, 0, numBytesRead);
+			System.out.println("Creating chunk with bytesRead of length "+bytesRead.length);
+			return new Chunk(Integer.toString(bytesRead.hashCode()), bytesRead);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
