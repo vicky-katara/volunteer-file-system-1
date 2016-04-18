@@ -31,6 +31,7 @@ public class SenderReceiver {
 			String msg = dis.readUTF();
 			//System.out.println("receiveMessageOn() Received "+msg.substring(0, 20));
 			//System.out.println("receiveMessageOn() Received "+msg);
+			System.out.println("Received "+msg+" from "+socket.getInetAddress().getHostAddress()+":"+socket.getPort());
 			return msg;
 		}
 		catch(Exception e){
@@ -43,6 +44,7 @@ public class SenderReceiver {
 	
 	public void sendMesssageViaTCPOn(Socket socket, String payload){
 		try{
+			System.out.println("Sending "+payload+" to "+socket.getInetAddress().getHostAddress()+":"+socket.getPort());
 			if(socket.isClosed())
 				throw new Exception("sendMesssageOn:"+socket.toString()+" is closed. Cannot continue");
 			//System.out.println("Trying to send |"+payload.substring(0, Math.min(20, payload.length()))+"...| to "+socket.getInetAddress()+":"+socket.getPort());
