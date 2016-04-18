@@ -31,6 +31,7 @@ public class SenderReceiver {
 			String msg = dis.readUTF();
 			//System.out.println("receiveMessageOn() Received "+msg.substring(0, 20));
 			//System.out.println("receiveMessageOn() Received "+msg);
+			System.out.println("Received "+msg+" from "+socket.getInetAddress().getHostAddress()+":"+socket.getPort());
 			return msg;
 		}
 		catch(Exception e){
@@ -43,6 +44,7 @@ public class SenderReceiver {
 	
 	public void sendMesssageViaTCPOn(Socket socket, String payload){
 		try{
+			System.out.println("Sending "+payload+" to "+socket.getInetAddress().getHostAddress()+":"+socket.getPort());
 			if(socket.isClosed())
 				throw new Exception("sendMesssageOn:"+socket.toString()+" is closed. Cannot continue");
 			//System.out.println("Trying to send |"+payload.substring(0, Math.min(20, payload.length()))+"...| to "+socket.getInetAddress()+":"+socket.getPort());
@@ -59,6 +61,7 @@ public class SenderReceiver {
 	
 	public String sendDatagramAndGetUDPReplyOn(Peer p, String payload){
 		try{
+			System.out.println("Sending UDP "+payload+" to "+p);
 			DatagramSocket clientSocket = new DatagramSocket();
 			byte[] sendData = payload.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
@@ -68,8 +71,9 @@ public class SenderReceiver {
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			clientSocket.receive(receivePacket);
 			String reply = new String(receivePacket.getData());
-			System.out.println("Received datagram:"+reply+"|");
-			System.out.println("Of the form :"+Arrays.toString(receivePacket.getData()));
+			System.out.print("Received datagram:"+reply+"|");
+			System.out.print("Of the form :"+Arrays.toString(receivePacket.getData()));
+			System.out.println("from "+p);
 			clientSocket.close();
 			return reply;
 		}catch(Exception e){e.printStackTrace();return "Error in receiving datagram packet";}
@@ -80,6 +84,7 @@ public class SenderReceiver {
 			byte[] sendData = payload.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
 			//System.out.println("Sending UDP Reply datagram:"+payload+"|");
+			System.out.println("Replying UDP "+payload+" to "+p);
 			serverSocket.send(sendPacket);
 		}
 		catch(UnknownHostException uhe){
