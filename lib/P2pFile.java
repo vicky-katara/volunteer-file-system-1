@@ -66,7 +66,7 @@ public class P2pFile {
 		return null;
 	}
 	
-	byte[] getCoalescedBytes() {
+	public byte[] getCoalescedBytes() {
 		ArrayList<Byte> byteList = new ArrayList<>(this.metadata.numChunks*Chunk.CHUNK_SIZE);
 		for(int chunkNumber=0; chunkNumber<this.metadata.numChunks; chunkNumber++){
 			byte[] bytesInChunk = chunkList.get(chunkNumber).returnBytes();

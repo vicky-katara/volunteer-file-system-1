@@ -6,6 +6,8 @@ import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+import org.apache.commons.io.FileUtils;
+
 
 import lib.FileMetaData;
 import lib.NetworkAddress;
@@ -15,6 +17,8 @@ import lib.Peer;
 import lib.SenderReceiver;
 import requestReceiver.RequestReceiver;
 import requestReceiver.Requester;
+
+
 
 public class Client {
 	
@@ -124,15 +128,13 @@ public class Client {
 			m = mv.matcher(consoleString);
 			if(m.find()) {
 				String localFileName= m.group(1);
-				String remoteFileName= m.group(2);
 				if (debugFlag) System.out.println("mv command called with parameter "+ m.group(1));
 				mv(localFileName);
 				continue;
 			}
 			m = mvb.matcher(consoleString);
 			if(m.find()) {
-				String remoteFileName= m.group(1);
-				String localFileName= m.group(2);
+				String localFileName= m.group(1);
 				if (debugFlag) System.out.println("mvb command called with parameter "+ m.group(1));
 				mvb(localFileName);
 				continue;
@@ -224,6 +226,13 @@ public class Client {
 		P2pFile p2pf = new P2pFile(absolutePath);
 		Requester requestObject = new Requester();
 		requestObject.fetchFile(p2pf);
+		try { //reading the byte array and saving to a file.
+			FileUtils.writeByteArrayToFile(new File(absolutePath), p2pf.getCoalescedBytes());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	private void mv(String localFileName) {
