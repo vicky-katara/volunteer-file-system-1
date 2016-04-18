@@ -21,13 +21,11 @@ import lib.Peer;
 import lib.SenderReceiver;
 import requestReceiver.RequestReceiver;
 import requestReceiver.Requester;
-import requestReceiver.Servant;
 
 
 
 public class Client {
 	
-	private static final String METADATA_FILE_ENDING = ".md";
 	static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
@@ -200,16 +198,16 @@ public class Client {
 
 	private void rename(String fileName, String newName) {
 		// TODO Auto-generated method stub
-		FileMetaData fmd= FileMetaData.getFileMetadata(getAbsolutePath(fileName+METADATA_FILE_ENDING));
-		File oldfile = new File(getAbsolutePath(fileName+METADATA_FILE_ENDING));
-		fmd.setFileName(getAbsolutePath(newName+METADATA_FILE_ENDING));
+		FileMetaData fmd= FileMetaData.getFileMetadata(getAbsolutePath(fileName+FileMetaData.METADATA_FILE_ENDING));
+		File oldfile = new File(getAbsolutePath(fileName+FileMetaData.METADATA_FILE_ENDING));
+		fmd.setFileName(getAbsolutePath(newName+FileMetaData.METADATA_FILE_ENDING));
 		FileMetaData.StoreFileMetaDataFile(getAbsolutePath(fileName), fmd);
 		oldfile.delete();
 	}
 
 	private void rm(String fileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(fileName+METADATA_FILE_ENDING);
+		String absolutePath= getAbsolutePath(fileName+FileMetaData.METADATA_FILE_ENDING);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
@@ -223,7 +221,7 @@ public class Client {
 
 	private void mvb(String localFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(localFileName+METADATA_FILE_ENDING);
+		String absolutePath= getAbsolutePath(localFileName+FileMetaData.METADATA_FILE_ENDING);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
@@ -244,7 +242,7 @@ public class Client {
 
 	private void mv(String localFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(localFileName+METADATA_FILE_ENDING);
+		String absolutePath= getAbsolutePath(localFileName+FileMetaData.METADATA_FILE_ENDING);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");

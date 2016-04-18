@@ -15,7 +15,7 @@ public class MetaDataStorageTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		testFileName = "testFileName";
+		testFileName = System.getProperty("user.home")+File.separatorChar+"test"+File.separatorChar+"testFileName.class";
 		metadata = new FileMetaData(testFileName,1);
 	}
 
@@ -23,7 +23,7 @@ public class MetaDataStorageTest {
 	public void testStoreFileMetaData() {
 		String directory = "";
 		FileMetaData.StoreFileMetaDataDirectory(directory, metadata);
-		File storedData = new File(testFileName); 
+		File storedData = new File(testFileName+FileMetaData.METADATA_FILE_ENDING); 
 		assertTrue(storedData.exists());
 	}
 
@@ -31,7 +31,7 @@ public class MetaDataStorageTest {
 	public void testGetFileMetadata() {
 		String directory = "";
 		FileMetaData.StoreFileMetaDataDirectory(directory, metadata);
-		File storedData = new File(testFileName); 
+		File storedData = new File(testFileName+FileMetaData.METADATA_FILE_ENDING); 
 		assertTrue(storedData.exists());
 		FileMetaData retrievedFileMetaData;
 		retrievedFileMetaData = FileMetaData.getFileMetadata(testFileName);
