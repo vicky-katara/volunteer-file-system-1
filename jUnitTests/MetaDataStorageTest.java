@@ -15,7 +15,7 @@ public class MetaDataStorageTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		testFileName = System.getProperty("user.home")+File.separatorChar+"test"+File.separatorChar+"testFileName.class";
+		testFileName = System.getProperty("user.home")+File.separatorChar+"testFileName.class";
 		metadata = new FileMetaData(testFileName,1);
 	}
 
