@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class FileMetaData implements Serializable{
+	private static final String METADATA_FILE_ENDING = ".md";
 	private static final long serialVersionUID = 5470463765499328330L; //for serializing.
 	String fileName;
 	public String getFileName() {
@@ -33,8 +34,11 @@ public class FileMetaData implements Serializable{
 	public static void StoreFileMetaDataFile(String path, FileMetaData metadata){
 		
 		FileOutputStream fileOut;
+		if (!path.endsWith(METADATA_FILE_ENDING)){
+			path=path+METADATA_FILE_ENDING;
+		}
 		try {
-			fileOut = new FileOutputStream(path);
+			fileOut = new FileOutputStream(path+METADATA_FILE_ENDING);
 			ObjectOutputStream out = new ObjectOutputStream(fileOut);
 			out.writeObject(metadata);
 			out.close();

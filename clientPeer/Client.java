@@ -6,7 +6,11 @@ import java.util.regex.Pattern;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
+
 import org.apache.commons.io.FileUtils;
+
+
+
 
 
 import lib.FileMetaData;
@@ -17,11 +21,13 @@ import lib.Peer;
 import lib.SenderReceiver;
 import requestReceiver.RequestReceiver;
 import requestReceiver.Requester;
+import requestReceiver.Servant;
 
 
 
 public class Client {
 	
+	private static final String METADATA_FILE_ENDING = ".md";
 	static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
@@ -194,16 +200,16 @@ public class Client {
 
 	private void rename(String fileName, String newName) {
 		// TODO Auto-generated method stub
-		FileMetaData fmd= FileMetaData.getFileMetadata(getAbsolutePath(fileName));
-		File oldfile = new File(getAbsolutePath(fileName));
-		fmd.setFileName(getAbsolutePath(newName));
+		FileMetaData fmd= FileMetaData.getFileMetadata(getAbsolutePath(fileName+METADATA_FILE_ENDING));
+		File oldfile = new File(getAbsolutePath(fileName+METADATA_FILE_ENDING));
+		fmd.setFileName(getAbsolutePath(newName+METADATA_FILE_ENDING));
 		FileMetaData.StoreFileMetaDataFile(getAbsolutePath(fileName), fmd);
 		oldfile.delete();
 	}
 
 	private void rm(String fileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(fileName);
+		String absolutePath= getAbsolutePath(fileName+METADATA_FILE_ENDING);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
@@ -217,7 +223,7 @@ public class Client {
 
 	private void mvb(String localFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(localFileName);
+		String absolutePath= getAbsolutePath(localFileName+METADATA_FILE_ENDING);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
@@ -226,8 +232,9 @@ public class Client {
 		P2pFile p2pf = new P2pFile(absolutePath);
 		Requester requestObject = new Requester();
 		requestObject.fetchFile(p2pf);
+		String outputLocation = System.getProperty("user.home")+File.separatorChar+"files"+File.separatorChar+localFileName;
 		try { //reading the byte array and saving to a file.
-			FileUtils.writeByteArrayToFile(new File(absolutePath), p2pf.getCoalescedBytes());
+			FileUtils.writeByteArrayToFile(new File(outputLocation), p2pf.getCoalescedBytes());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -237,7 +244,7 @@ public class Client {
 
 	private void mv(String localFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(localFileName);
+		String absolutePath= getAbsolutePath(localFileName+METADATA_FILE_ENDING);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");

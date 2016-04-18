@@ -23,7 +23,7 @@ public class Servant extends Thread{
 
 	DatagramPacket udpDatagram;
 	DatagramSocket socketOnWhichToSend;
-	static String pathToDir;
+	public static String pathToDir;
 	Servant(DatagramPacket fromRequestor, DatagramSocket onWhichToSend){
 		this.udpDatagram = fromRequestor;
 		this.socketOnWhichToSend = onWhichToSend;
