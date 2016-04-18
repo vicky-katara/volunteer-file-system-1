@@ -242,7 +242,7 @@ public class Client {
 
 	private void mv(String localFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(localFileName+FileMetaData.METADATA_FILE_ENDING);
+		String absolutePath= getAbsolutePath(localFileName);
 		File localFile = new File(absolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
