@@ -40,33 +40,33 @@ public class Requester extends Thread{
 	
 
 	//Refer type 102, 103
-	public void getChunkList(String chunkname, Peer p, ArrayList<Peer> availablePeers) throws Exception{
-		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(102,chunkname).getPayload());
-		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getType()==103) {
-			splitted = receivedPacket.getData().split(":");
-			chunkname = splitted[0];
-			Chunk toDistribute = new Chunk(chunkname, splitted[1]);
-			byte[] chunksRetrieved = toDistribute.returnBytes();
-			
-			RoundRobin<Peer> p4 = new RoundRobin<Peer>(availablePeers);
-			Iterator it = p4.iterator();
-			int chunkIndex = 0;
-			while(chunkIndex != chunksRetrieved.length-1) {
-				Peer toSend = (Peer) it.next();
-				if(checkIfPeerIsUp(toSend)){
-					Chunk c = new Chunk(chunkname,String.valueOf(chunksRetrieved[chunkIndex]));
-					chunkIndex++;
-					push(toSend, c);
-				} else {
-					System.out.println(toSend.getIpAddress()+"is down!");
-				}	
-			}	
-		} else {
-			throw new Exception("ACK not received");
-		}
-		
-	}
+//	public void getChunkList(String chunkname, Peer p, ArrayList<Peer> availablePeers) throws Exception{
+//		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(102,chunkname).getPayload());
+//		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
+//		if(receivedPacket.getType()==103) {
+//			splitted = receivedPacket.getData().split(":");
+//			chunkname = splitted[0];
+//			Chunk toDistribute = new Chunk(chunkname, splitted[1]);
+//			byte[] chunksRetrieved = toDistribute.returnBytes();
+//			
+////			RoundRobin<Peer> p4 = new RoundRobin<Peer>(availablePeers);
+////			Iterator it = p4.iterator();
+//			int chunkIndex = 0;
+//			while(chunkIndex != chunksRetrieved.length-1) {
+//				Peer toSend = (Peer) it.next();
+//				if(checkIfPeerIsUp(toSend)){
+//					Chunk c = new Chunk(chunkname,String.valueOf(chunksRetrieved[chunkIndex]));
+//					chunkIndex++;
+//					push(toSend, c);
+//				} else {
+//					System.out.println(toSend.getIpAddress()+"is down!");
+//				}	
+//			}	
+//		} else {
+//			throw new Exception("ACK not received");
+//		}
+//		
+//	}
 			
 	//Refer types 106, 107
 	public void delete(Peer p, Chunk c) throws Exception{
@@ -203,31 +203,29 @@ public class Requester extends Thread{
 	}
 }
 	
-	class RoundRobin<Peer> implements Iterable<Peer>{
-		private ArrayList<Peer> peers = new ArrayList<Peer>();
-		
-		public RoundRobin(ArrayList<Peer> peers){
-			this.peers = peers;
-		}
-		@Override
-		public Iterator<Peer> iterator() {
-			return new Iterator<Peer>(){
-				private int index = 0;
-				
-				public Peer next(){
-					Peer curr = peers.get(index);
-					//System.out.println(index);
-					index = (index+1)%peers.size();
-					return curr;
-				}
-				@Override
-				public boolean hasNext() {
-					// TODO Auto-generated method stub
-					return true;
-				}
-			};
-		}
-		
-	}
+//	class RoundRobin<Peer> implements Iterable<Peer>{
+//		private ArrayList<Peer> peers = new ArrayList<Peer>();
+//		
+//		public RoundRobin(ArrayList<Peer> peers){
+//			this.peers = peers;
+//		}
+//		@Override
+//		public Iterator<Peer> iterator() {
+//			return new Iterator<Peer>(){
+//				private int index = 0;
+//				
+//				public Peer next(){
+//					Peer curr = peers.get(index);
+//					//System.out.println(index);
+//					index = (index+1)%peers.size();
+//					return curr;
+//				}
+//				@Override
+//				public boolean hasNext() {
+//					// TODO Auto-generated method stub
+//					return true;
+//				}
+//			};
+//		}
 
 
