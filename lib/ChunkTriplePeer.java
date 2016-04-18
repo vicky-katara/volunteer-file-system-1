@@ -38,6 +38,21 @@ public class ChunkTriplePeer implements Serializable{
 		this.three = x;
 	}
 	
+	public Peer getPrimaryPeer(int number){
+		if(number==1){
+			return this.one;
+		} else if(number == 2){
+			return this.two;
+		} else if(number ==3){
+			return this.three;
+		} 
+		return null;
+	}
+	
+	public String getChunk(){
+		return chunkName;
+	}
+	
 	public void setPeerNumber(int number, Peer x){
 		if(number==1){
 			this.one = x;

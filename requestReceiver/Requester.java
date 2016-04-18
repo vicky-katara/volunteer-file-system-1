@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import lib.SenderReceiver;
 import lib.Chunk;
+import lib.ChunkTriplePeer;
 import lib.FileMetaData;
 import lib.P2pFile;
 import lib.Packet;
@@ -130,11 +131,71 @@ public class Requester extends Thread{
 	
 	//Fetch 
 	public void fetchFile(P2pFile p2p){
+		metadata = p2p.getMetadata();
+		chunkList = p2p.getChunkList(); //empty
+		ArrayList<ChunkTriplePeer> ctp = metadata.returnChunkPeer();
+		for (int chunkTripleIndex = 0; chunkTripleIndex< ctp.size(); chunkTripleIndex++){
+			Peer isUp = ctp.get(chunkTripleIndex).getPrimaryPeer(chunkTripleIndex);
+			if(checkIfPeerIsUp(isUp)){
+				String chunkname = ctp.get(chunkTripleIndex).getChunk();
+				Chunk c = new Chunk(chunkname);
+				new SenderReceiver().sendDatagramAndGetUDPReplyOn(isUp, new Packet(102,chunkname).getPayload());
+				Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
+				if(receivedPacket.getType()==103) {
+					splitted = receivedPacket.getData().split(":");
+					chunkname = splitted[0];
+					Chunk toDistribute = new Chunk(chunkname, splitted[1]);
+					byte[] chunksRetrieved = toDistribute.returnBytes();
+					Chunk newChunk = new Chunk(chunkname, chunksRetrieved);
+					chunkList.add(newChunk);
+				} else {
+					try {
+						throw new Exception("Reply not expected");
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			} else {
+				try {
+					throw new Exception("Peer is not up");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
+		}
+		
+		
+		
 		
 	}
 	
 	//Delete
 	public void deleteFile(P2pFile p2p){
+		chunkList = p2p.getChunkList(); //chunk list to delete
+		metadata = p2p.getMetadata(); //Old metadata
+		
+		for(int chunkIndex=0; chunkIndex<chunkList.size();chunkIndex++){
+			
+			for(int replicaNumber = 1; replicaNumber <=3 ; replicaNumber++){
+				Peer toSend = returnNextPeer();
+				if(checkIfPeerIsUp(toSend)){
+					metadata.getChunkPeerNumber(chunkIndex).setPeerNumber(replicaNumber, toSend);
+					try {
+						delete(toSend, chunkList.get(chunkIndex));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else {
+					availablePeers.remove(toSend);
+					chunkIndex--;
+					continue;
+				}
+			}
+
+		}
 		
 	}
 	public static void main(String[] args){
