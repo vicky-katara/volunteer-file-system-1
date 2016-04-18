@@ -247,6 +247,7 @@ public class Client {
 		ArrayList<Peer> availablePeerList = getAvailablePeerList();
 		Requester requestObject = new Requester();
 		requestObject.pushFile(p2pf, availablePeerList);
+		localFile.delete();
 		
 	}
 
