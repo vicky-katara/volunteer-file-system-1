@@ -205,7 +205,11 @@ public class Client {
 			if (fileDetails.isDirectory()){
 				System.out.print("D ");
 				System.out.println(stringArray[x]+File.separatorChar);	
-			}else{
+			}else if (fileDetails.getName().endsWith(FileMetaData.METADATA_FILE_ENDING)){
+				System.out.print("M ");
+				System.out.println(stringArray[x]);	
+			}
+			else{
 				System.out.print("F ");
 				System.out.println(stringArray[x]);	
 			}
