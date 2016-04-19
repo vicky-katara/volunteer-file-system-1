@@ -60,7 +60,10 @@ public class Client {
 		
 		// interact with user
 		currentDirectory = new File(System.getProperty("user.home")+File.separatorChar+"p2pRoot");
-
+		if (!currentDirectory.exists()){
+			currentDirectory.mkdir();
+		}
+		
 		try {
 			main_menu();
 		} catch (IOException e) {
