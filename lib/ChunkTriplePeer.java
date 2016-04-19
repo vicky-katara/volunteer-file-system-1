@@ -38,7 +38,7 @@ public class ChunkTriplePeer implements Serializable{
 		this.three = x;
 	}
 	
-	public Peer getPrimaryPeer(int number){
+	public Peer getPeer(int number){
 		if(number==1){
 			return this.one;
 		} else if(number == 2){
@@ -49,7 +49,7 @@ public class ChunkTriplePeer implements Serializable{
 		return null;
 	}
 	
-	public String getChunk(){
+	public String getChunkName(){
 		return chunkName;
 	}
 	

@@ -150,43 +150,49 @@ public class Requester extends Thread{
 	public void fetchFile(P2pFile p2p){
 		metadata = p2p.getMetadata();
 		chunkList = p2p.getChunkList(); //empty
-		ArrayList<ChunkTriplePeer> ctp = metadata.returnChunkPeer();
-		for (int chunkTripleIndex = 0; chunkTripleIndex< ctp.size(); chunkTripleIndex++){
-			Peer isUp = ctp.get(chunkTripleIndex).getPrimaryPeer(chunkTripleIndex);
-			if(checkIfPeerIsUp(isUp)){
-				String chunkname = ctp.get(chunkTripleIndex).getChunk();
-				Chunk c = new Chunk(chunkname);
-				new SenderReceiver().sendDatagramAndGetUDPReplyOn(isUp, new Packet(102,chunkname).getPayload());
-				Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-				if(receivedPacket.getType()==103) {
-					splitted = receivedPacket.getData().split(":");
-					chunkname = splitted[0];
-					Chunk toDistribute = new Chunk(chunkname, splitted[1]);
-					byte[] chunksRetrieved = toDistribute.returnBytes();
-					Chunk newChunk = new Chunk(chunkname, chunksRetrieved);
-					chunkList.add(newChunk);
-				} else {
+		ArrayList<ChunkTriplePeer> ctpList = metadata.returnChunkPeer();
+		for (int chunkTripleIndex = 0; chunkTripleIndex< ctpList.size(); chunkTripleIndex++) {
+			ChunkTriplePeer ctp = ctpList.get(chunkTripleIndex);
+			for(int peerNumber=1; peerNumber <= 3; peerNumber++){
+				if( fetchChunkFromPeerNumber(ctp, peerNumber) == true )
+					break;
+				if( peerNumber == 3 ) {
 					try {
-						throw new Exception("Reply not expected");
+						throw new Exception("Cannot fetch chunk number "+chunkTripleIndex+". No Peer is up.");
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
+						return;
 					}
 				}
+			}
+		}
+	}
+	
+	public boolean fetchChunkFromPeerNumber(ChunkTriplePeer ctp, int peerNumber) {
+		Peer isUp = ctp.getPeer(peerNumber);
+		if(checkIfPeerIsUp(isUp)){
+			String chunkname = ctp.getChunkName();
+			String replyOf102 = new SenderReceiver().sendDatagramAndGetUDPReplyOn(isUp, new Packet(102,chunkname).getPayload());
+			Packet receivedPacket = new Packet(new String(replyOf102));
+			if(receivedPacket.getType()==103) {
+				String[] splitted = receivedPacket.getData().split(":");
+				chunkname = splitted[0];
+				Chunk toDistribute = new Chunk(chunkname, splitted[1]);
+				byte[] chunksRetrieved = toDistribute.returnBytes();
+				Chunk newChunk = new Chunk(chunkname, chunksRetrieved);
+				chunkList.add(newChunk);
+				return true;
 			} else {
 				try {
-					throw new Exception("Peer is not up");
+					throw new Exception("Reply not expected"+receivedPacket);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				return false;
 			}
-			
+		} else {
+			return false;
 		}
-		
-		
-		
-		
 	}
 	
 	//Delete
