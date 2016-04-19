@@ -35,7 +35,7 @@ public class Server extends Thread implements Runnable{
 			case 0:
 				new SenderReceiver().sendMesssageViaTCPOn(clientSocket,new Packet(1,"").toString());
 				break;
-			case 1:
+			case 2:
 				//Get port, ip address from client
 				String[] clientInformation = payloadFromClient.getData().split(":");
 				String clientIPaddress = clientInformation[0];
@@ -43,7 +43,7 @@ public class Server extends Thread implements Runnable{
 				addToHash(clientIPaddress, clientPortNumber);
 				viewCurrentHash();
 				//Send current list of active peers to requesting client
-				Packet packetFromServer = new Packet(clientOption, allActivePeersHash());
+				Packet packetFromServer = new Packet(3, allActivePeersHash());
 				String payloadFromServer = packetFromServer.getPayload();
 				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, payloadFromServer);
 				break;
