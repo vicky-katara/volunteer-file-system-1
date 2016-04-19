@@ -46,7 +46,7 @@ public class Chunk implements Comparable<Chunk>{
 		}
 		catch(NumberFormatException nfe){
 			System.err.print(Thread.currentThread().getName()+" has encountered a NumberFormatException in Chunk.returnBytes:");
-			System.err.println("It tried to parse "+this.byteString);
+			System.err.println("It tried to parse "+this.byteString+" from "+this);
 		}
 		return null;
 	}
