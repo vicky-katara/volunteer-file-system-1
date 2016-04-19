@@ -93,7 +93,6 @@ public class Requester extends Thread{
 		this.availablePeers = availablePeers;
 		
 		for(int chunkIndex=0; chunkIndex<chunkList.size();chunkIndex++){
-			
 			for(int replicaNumber = 1; replicaNumber <=3 ; replicaNumber++){
 				Peer toSend = returnNextPeer();
 				if(checkIfPeerIsUp(toSend)){
@@ -111,7 +110,8 @@ public class Requester extends Thread{
 				}
 			}
 
-		}		
+		}
+		System.out.println("Pushed file.\n"+metadata);
 		
 	}
 	

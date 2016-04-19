@@ -125,7 +125,7 @@ public class FileMetaData implements Serializable{
 	}
 
 	public String toString(){
-		return ""+fileName+">Chunks>"+chunkPeerList;
+		return "FileMD of : "+fileName+" >Chunks> "+chunkPeerList;
 	}
 
 }
