@@ -15,6 +15,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
@@ -77,6 +78,32 @@ public class SenderReceiver {
 			clientSocket.close();
 			return reply;
 		}catch(Exception e){e.printStackTrace();return "Error in receiving datagram packet";}
+	}
+	
+	public String sendDatagramAndGetUDPReplyOnWithTimer(Peer p, String payload, int milliseconds){
+		try{
+			System.out.println("Sending UDP "+payload+" to "+p);
+			DatagramSocket clientSocket = new DatagramSocket();
+			// Set timeout in milliseconds
+			clientSocket.setSoTimeout(milliseconds);
+			
+			byte[] sendData = payload.getBytes();
+			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
+			System.out.println("Sending datagram:"+sendData);
+			clientSocket.send(sendPacket);
+			byte[] receiveData = new byte[10240];
+			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+			clientSocket.receive(receivePacket);
+			String reply = new String(receivePacket.getData());
+			System.out.print("Received datagram:"+reply+"|");
+			System.out.print("Of the form :"+Arrays.toString(receivePacket.getData()));
+			System.out.println("from "+p);
+			clientSocket.close();
+			return reply;
+		} catch(SocketTimeoutException ste){
+			return "timeout";
+		}
+		catch(Exception e){e.printStackTrace();return "Error in receiving datagram packet";}
 	}
 	
 	public void sendUDPReply(DatagramSocket serverSocket, Peer p, String payload){

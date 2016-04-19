@@ -29,13 +29,18 @@ public class Requester extends Thread{
 	
 	//Refer types 100, 101
 	public boolean checkIfPeerIsUp(Peer p){
-		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(100, "").getPayload());
-		//SAMMMMMMMMMMM Timer -- 
-		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getType()==101) {
+		long nanotime = System.nanoTime();
+		String payload = new SenderReceiver().sendDatagramAndGetUDPReplyOnWithTimer(p, new Packet(100, "").getPayload(), 7000);
+		if(payload.contentEquals("timeout"))
+			return false;
+		Packet type101Packet = new Packet(payload);
+//		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
+		if(type101Packet.getType()==101) {
 			return true;
+		} else {
+			System.out.println("Unexpected Type message received: "+type101Packet);
+			return false;
 		}
-		return false;
 	}
 	
 
@@ -92,6 +97,7 @@ public class Requester extends Thread{
 				Peer toSend = returnNextPeer();
 				if(checkIfPeerIsUp(toSend)){
 					metadata.getChunkPeerNumber(chunkIndex).setPeerNumber(replicaNumber, toSend);
+					System.out.println("Sending chunk number "+chunkIndex+" of "+metadata.getFileName()+" to "+toSend);
 					push(toSend, chunkList.get(chunkIndex));
 				} else {
 					availablePeers.remove(toSend);
