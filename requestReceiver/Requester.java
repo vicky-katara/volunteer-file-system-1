@@ -149,6 +149,7 @@ public class Requester extends Thread{
 	//Fetch 
 	public void fetchFile(P2pFile p2p){
 		metadata = p2p.getMetadata();
+		System.out.println("MD of file to fetch: "+metadata);
 		chunkList = p2p.getChunkList(); //empty
 		ArrayList<ChunkTriplePeer> ctpList = metadata.returnChunkPeer();
 		for (int chunkTripleIndex = 0; chunkTripleIndex< ctpList.size(); chunkTripleIndex++) {
