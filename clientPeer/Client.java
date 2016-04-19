@@ -264,6 +264,7 @@ public class Client {
 		P2pFile p2pf = new P2pFile(oldMetaData);
 		Requester requestObject = new Requester();
 		requestObject.deleteFile(p2pf);
+		localFile.delete();
 
 	}
 
