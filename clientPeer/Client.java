@@ -117,7 +117,7 @@ public class Client {
 		String consoleString = "";
 		//FileMetadata currentDirectory= new FileMetadata();
 
-		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,help,exit");
+		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,ls,help,exit");
 		while (!consoleString.equals("exit")){
 			// Printing the console message
 			System.out.print("p2pfs "+currentDirectory.getName()+" # ");
@@ -179,8 +179,15 @@ public class Client {
 			if (consoleString.equals("ls")){
 				String[] stringArray = currentDirectory.list();
 				for (int x =0; x<stringArray.length; x++){
+					File fileDetails = new File(stringArray[x]);
+					if (fileDetails.isDirectory()){
+						System.out.print("D ");
+					}else{
+						System.out.print("F ");
+					}
 					System.out.println(stringArray[x]);	
 				}
+				System.out.println();
 				continue;
 			}
 			if (consoleString.equals("help")){
