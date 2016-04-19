@@ -267,10 +267,10 @@ public class Client {
 		String metaDataAbsolutePath;
 		if (!localFileName.endsWith(FileMetaData.METADATA_FILE_ENDING)){
 			metaDataAbsolutePath = getAbsolutePath(localFileName+FileMetaData.METADATA_FILE_ENDING);
-			localFileName = localFileName.replace("."+FileMetaData.METADATA_FILE_ENDING, "");
 		}
 		else {
 			metaDataAbsolutePath = getAbsolutePath(localFileName);
+			localFileName = localFileName.replace("."+FileMetaData.METADATA_FILE_ENDING, "");
 		}
 				
 		File localFile = new File(metaDataAbsolutePath);
@@ -285,7 +285,7 @@ public class Client {
 
 
 		try { //reading the byte array and saving to a file.
-			File outputFile = new File(localFileName);
+			File outputFile = new File(getAbsolutePath(localFileName));
 			if (debugFlag){
 				outputFile = new File(outputFile.getParentFile().getAbsolutePath()+File.separatorChar+ "regen-"+outputFile.getName());
 			}
