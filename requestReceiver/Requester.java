@@ -128,8 +128,10 @@ public class Requester extends Thread{
 		for (int chunkTripleIndex = 0; chunkTripleIndex< ctpList.size(); chunkTripleIndex++) {
 			ChunkTriplePeer ctp = ctpList.get(chunkTripleIndex);
 			for(int peerNumber=1; peerNumber <= 3; peerNumber++){
-				if( fetchChunkFromPeerNumber(ctp, peerNumber) == true )
+				if( fetchChunkFromPeerNumber(ctp, peerNumber) == true ){
+					System.out.println("Fetched chunk number "+chunkTripleIndex+" from "+ctp.getPeer(peerNumber));
 					break;
+				}
 				if( peerNumber == 3 ) {
 					try {
 						throw new Exception("Cannot fetch chunk number "+chunkTripleIndex+". No Peer is up.");
