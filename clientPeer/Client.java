@@ -15,6 +15,7 @@ import org.apache.commons.io.FileUtils;
 
 
 
+
 import lib.FileMetaData;
 import lib.NetworkAddress;
 import lib.P2pFile;
@@ -27,82 +28,82 @@ import requestReceiver.Requester;
 
 
 public class Client {
-	
+
 	static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
 	static File currentDirectory;
-	
+
 	private Socket socketToServer;
-	
+
 	Client(String serverIP, int portNumber){
 		// Set self IP Address
 		Client.selfIpAddress = NetworkAddress.getIPAddress("enp0s8");
-		
+
 		// Connect to the Server and ask for host names available to store files.
 		System.out.println("Connecting to server at "+serverIP+":"+portNumber);
-		
+
 		// Create socket to server
 		socketToServer = new SenderReceiver().returnSocketTo(serverIP, portNumber);
-		
+
 		// Create Payload to send to the server
 		String portNumberPayload = new Packet(0, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
-//		String portNumberPayload = new Packet(, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
+		//		String portNumberPayload = new Packet(, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
-		
+
 		// Receive Ok from the indexServer
 		Packet type1Packet = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer));
 		if(type1Packet.getType() != 1){
 			System.err.println("Incorrect packet recieved: "+type1Packet);
 			System.exit(-1);
 		}
-		
+
 		// interact with user
 		currentDirectory = new File(System.getProperty("user.home")+File.separatorChar+"p2pRoot");
 		if (!currentDirectory.exists()){
 			currentDirectory.mkdir();
 		}
-		
+
 		try {
 			main_menu();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		// go to command line interface
 	}
-	
+
 	ArrayList<Peer> getAvailablePeerList() throws Exception {
 		String portNumberPayload = new Packet(2, "").getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
-		
+
 		ArrayList<Peer> peerList = new ArrayList<Peer>();
-		
+
 		// receive list of all IP Addresses and Port Numbers from Server 
 		String peerListString = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer)).getData();
-		
+
 		System.out.println("Server said:"+peerListString);
-		
+
 		String[] peerArr = peerListString.split(";");
-		
+
 		Peer self = new Peer(Client.selfIpAddress, Client.requestReceiverPortNumber);
-		
+
 		for(int i=0; i<peerArr.length; i++){
 			Peer newPeer = new Peer(peerArr[i]);
 			if( newPeer.equals(self) == false){
 				peerList.add(newPeer);
 			}
 		}
-		
+
 		// Available list
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
-		
+
 		if(peerList.size()<3){
 			try{
-			throw new Exception("not enough peers. # of peers found:"+peerList.size());
+				throw new Exception("not enough peers. # of peers found:"+peerList.size());
 			} catch (Exception e){e.printStackTrace();}
 		}
 		return peerList;
@@ -184,13 +185,22 @@ public class Client {
 				ls();
 				continue;
 			}
+			if (consoleString.equals("clearchunks")){//secret developer command
+				File chunkFolder=new File(System.getProperty("user.home")+File.separatorChar+"Chunks");
+				if (chunkFolder.exists()){
+					chunkFolder.delete();
+				}
+				chunkFolder.mkdir();
+				System.out.println("chunk folder "+chunkFolder.getAbsolutePath()+" has been cleared");
+				continue;
+			}
 			if (consoleString.equals("help")){
 				helpMessage();
 				continue;
 			}
 			//catchall
 			System.out.println("command "+consoleString+"not recognized, please try again.");
-		
+
 		}
 
 		in.close();
@@ -225,8 +235,8 @@ public class Client {
 		System.out.println("ls			//shows all files+directories in directory");
 		System.out.println("help			//shows this message");
 		System.out.println("exit			//exits");
-		
-		
+
+
 	}
 
 	private void rename(String fileName, String newName) {
@@ -264,8 +274,14 @@ public class Client {
 		Requester requestObject = new Requester();
 		requestObject.fetchFile(p2pf);
 		String outputLocation = System.getProperty("user.home")+File.separatorChar+"files"+File.separatorChar+localFileName;
+
 		try { //reading the byte array and saving to a file.
-			FileUtils.writeByteArrayToFile(new File(outputLocation), p2pf.getCoalescedBytes());
+			File outputFile = new File(outputLocation);
+			if (!outputFile.getParentFile().exists()) //if the folder doesn't exist, create it.
+			{
+				outputFile.getParentFile().mkdir();
+			}
+			FileUtils.writeByteArrayToFile(outputFile, p2pf.getCoalescedBytes());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -292,7 +308,7 @@ public class Client {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	private void mkdir(String fileName) {
@@ -330,7 +346,7 @@ public class Client {
 			}
 			System.out.println(currentDirectory.getAbsolutePath());
 		}
-		
+
 	}
 
 	private String getAbsolutePath(String fileName) {
@@ -342,7 +358,7 @@ public class Client {
 		}
 	}
 
-	
+
 	public static void main(String[] args) {
 		try {
 			String[] connectionInfo = new URLReader().getConnectionString().split(":");
