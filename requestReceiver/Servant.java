@@ -41,11 +41,11 @@ public class Servant extends Thread{
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(101, "").getPayload());
 				} else if(receivedPacket.getType()==102) {
 					String chunkName = receivedPacket.getData();
-					Chunk chunkToBeReturned = getRequestedChunk(chunkName+udpDatagram.getAddress().toString());
+					Chunk chunkToBeReturned = getRequestedChunk(chunkName+udpDatagram.getAddress().getHostAddress());
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(103, receivedPacket.getData()+":"+chunkToBeReturned).getPayload());
 				} else if(receivedPacket.getType()==104) {
 					String[] splitted = receivedPacket.getData().split(":");
-					Chunk toBeStored = new Chunk(splitted[0]+udpDatagram.getAddress().toString(), splitted[1]);
+					Chunk toBeStored = new Chunk(splitted[0]+udpDatagram.getAddress().getHostAddress(), splitted[1]);
 					storeChunk(toBeStored);
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(105, splitted[0]).getPayload());
 				} else if(receivedPacket.getType()==106){
