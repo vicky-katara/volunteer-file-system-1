@@ -1,8 +1,10 @@
 package lib;
 
+import java.io.Serializable;
 import java.net.Socket;
 
-public class Peer {
+public class Peer implements Serializable{
+	private static final long serialVersionUID = 1746904393616228911L;
 	private String ipAddress;
 	public String getIpAddress() {
 		return ipAddress;
