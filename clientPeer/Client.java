@@ -283,7 +283,7 @@ public class Client {
 			availablePeerList = getAvailablePeerList();
 			Requester requestObject = new Requester();
 			requestObject.pushFile(p2pf, availablePeerList);
-			localFile.delete();
+			//localFile.delete();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
