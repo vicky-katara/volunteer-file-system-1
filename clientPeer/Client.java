@@ -247,13 +247,21 @@ public class Client {
 
 	private void rm(String fileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(fileName+FileMetaData.METADATA_FILE_ENDING);
-		File localFile = new File(absolutePath);
+		String metaDataAbsolutePath;
+		if (!fileName.endsWith(FileMetaData.METADATA_FILE_ENDING)){
+			metaDataAbsolutePath = getAbsolutePath(fileName+FileMetaData.METADATA_FILE_ENDING);
+		}
+		else {
+			metaDataAbsolutePath = getAbsolutePath(fileName);
+			fileName = fileName.replace("."+FileMetaData.METADATA_FILE_ENDING, "");
+		}
+		FileMetaData oldMetaData = FileMetaData.getFileMetadata(metaDataAbsolutePath);
+		File localFile = new File(metaDataAbsolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
 			return;
 		}
-		P2pFile p2pf = new P2pFile(absolutePath);
+		P2pFile p2pf = new P2pFile(oldMetaData);
 		Requester requestObject = new Requester();
 		requestObject.deleteFile(p2pf);
 
