@@ -16,7 +16,7 @@ public class Chunk implements Comparable<Chunk>{
 		this.byteString = Arrays.toString(b);
 	}
 	
-	public Chunk(String byteString){
+	public Chunk(String byteString) {
 		this.byteString = byteString;
 	}
 	public Chunk(String chunkName, String byteString){
@@ -26,6 +26,10 @@ public class Chunk implements Comparable<Chunk>{
 	
 	public String getChunkName(){
 		return this.chunkName;
+	}
+	
+	public String getByteString(){
+		return this.byteString;
 	}
 	
 	public String toString(){

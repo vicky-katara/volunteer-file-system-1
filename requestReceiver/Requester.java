@@ -2,6 +2,7 @@ package requestReceiver;
 
 import java.net.DatagramPacket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 
 import lib.SenderReceiver;
@@ -116,7 +117,7 @@ public class Requester extends Thread{
 	
 	//Refer types 104, 105
 	public void push(Peer p, Chunk c){
-		String payload = new SenderReceiver().sendDatagramAndGetUDPReplyOnWithTimer(p, new Packet(104,c.getChunkName()+":"+c.returnBytes()).getPayload(), 7000);
+		String payload = new SenderReceiver().sendDatagramAndGetUDPReplyOnWithTimer(p, new Packet(104,c.getChunkName()+":"+c.getByteString()).getPayload(), 7000);
 		
 		if(payload.contentEquals("timeout")){
 			try {
