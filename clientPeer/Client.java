@@ -282,13 +282,13 @@ public class Client {
 		P2pFile p2pf = new P2pFile(oldMetaData);
 		Requester requestObject = new Requester();
 		requestObject.fetchFile(p2pf);
-		String outputLocation = getAbsolutePath(localFileName);
-		if (debugFlag){
-			outputLocation = outputLocation + ".regen";
-		}
+
 
 		try { //reading the byte array and saving to a file.
-			File outputFile = new File(outputLocation);
+			File outputFile = new File(localFileName);
+			if (debugFlag){
+				outputFile = new File(outputFile.getParentFile().getAbsolutePath()+File.separatorChar+ "regen-"+outputFile.getName());
+			}
 			if (!outputFile.getParentFile().exists()) //if the folder doesn't exist, create it.
 			{
 				outputFile.getParentFile().mkdir();
