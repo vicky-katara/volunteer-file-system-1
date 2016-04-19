@@ -283,6 +283,7 @@ public class Client {
 				outputFile.getParentFile().mkdir();
 			}
 			FileUtils.writeByteArrayToFile(outputFile, p2pf.getCoalescedBytes());
+			System.out.println("file retrieved succesfully. placed into "+outputFile.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
