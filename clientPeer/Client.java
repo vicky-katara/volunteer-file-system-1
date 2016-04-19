@@ -283,8 +283,8 @@ public class Client {
 			availablePeerList = getAvailablePeerList();
 			Requester requestObject = new Requester();
 			requestObject.pushFile(p2pf, availablePeerList);
+			FileMetaData.StoreFileMetaDataFile(getAbsolutePath(localFileName), p2pf.getMetadata());
 			//localFile.delete();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
