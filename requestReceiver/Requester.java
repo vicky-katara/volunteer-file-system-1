@@ -143,7 +143,7 @@ public class Requester extends Thread{
 	}
 
 	public Peer returnNextPeer(){
-		return availablePeers.get((lastPeerIndex+1)%availablePeers.size());
+		return availablePeers.get((lastPeerIndex++)%(availablePeers.size()));
 	}
 	
 	//Fetch 
