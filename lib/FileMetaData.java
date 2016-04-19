@@ -68,9 +68,9 @@ public class FileMetaData implements Serializable{
 
 	public static FileMetaData getFileMetadata(String path){
 		FileMetaData metadata = null;
-		if (!path.endsWith(METADATA_FILE_ENDING)){
-			path=path+METADATA_FILE_ENDING;
-		}
+//		if (!path.endsWith(METADATA_FILE_ENDING)){
+//			path=path+METADATA_FILE_ENDING;
+//		}
 		try
 		{
 			FileInputStream fileIn = new FileInputStream(path);
