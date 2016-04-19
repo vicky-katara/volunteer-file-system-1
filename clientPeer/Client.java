@@ -177,17 +177,7 @@ public class Client {
 				continue;
 			}
 			if (consoleString.equals("ls")){
-				String[] stringArray = currentDirectory.list();
-				for (int x =0; x<stringArray.length; x++){
-					File fileDetails = new File(stringArray[x]);
-					if (fileDetails.isDirectory()){
-						System.out.print("D ");
-					}else{
-						System.out.print("F ");
-					}
-					System.out.println(stringArray[x]);	
-				}
-				System.out.println();
+				ls();
 				continue;
 			}
 			if (consoleString.equals("help")){
@@ -200,6 +190,21 @@ public class Client {
 		}
 
 		in.close();
+	}
+
+	private void ls() {
+		String[] stringArray = currentDirectory.list();
+		for (int x =0; x<stringArray.length; x++){
+			File fileDetails = new File(stringArray[x]);
+			if (fileDetails.isDirectory()){
+				System.out.print("D ");
+				System.out.println(stringArray[x]+File.separatorChar);	
+			}else{
+				System.out.print("F ");
+				System.out.println(stringArray[x]);	
+			}
+		}
+		System.out.println();
 	}
 
 
