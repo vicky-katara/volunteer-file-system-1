@@ -119,6 +119,8 @@ public class Client {
 
 		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,help,exit");
 		while (!consoleString.equals("exit")){
+			// Printing the console message
+			System.out.print("p2pfs "+currentDirectory.getName()+" # ");
 			// contains the main menu options
 			consoleString = in.nextLine();
 
