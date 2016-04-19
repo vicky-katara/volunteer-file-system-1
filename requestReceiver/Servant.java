@@ -36,7 +36,7 @@ public class Servant extends Thread{
 		Packet receivedPacket = null;
 		//while(true){
 			try {
-				System.out.println("Received "+udpDatagram.getData());
+				System.out.println("Received "+new String(udpDatagram.getData()));
 				receivedPacket = new Packet(new String(udpDatagram.getData()));
 				System.out.println("Servant trying to handle "+receivedPacket+" ...");
 				if(receivedPacket.getType()==100) {
