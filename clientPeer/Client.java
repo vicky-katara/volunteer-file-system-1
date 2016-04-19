@@ -270,7 +270,8 @@ public class Client {
 			System.err.println("file not found, exiting");
 			return;
 		}
-		P2pFile p2pf = new P2pFile(absolutePath);
+		FileMetaData oldMetaData = FileMetaData.getFileMetadata(absolutePath);
+		P2pFile p2pf = new P2pFile(oldMetaData);
 		Requester requestObject = new Requester();
 		requestObject.fetchFile(p2pf);
 		String outputLocation = System.getProperty("user.home")+File.separatorChar+"files"+File.separatorChar+localFileName;
