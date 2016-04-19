@@ -8,14 +8,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 import org.apache.commons.io.FileUtils;
-
-
-
-
-
-
-
-
 import lib.FileMetaData;
 import lib.NetworkAddress;
 import lib.P2pFile;
@@ -29,7 +21,7 @@ import requestReceiver.Requester;
 
 public class Client {
 
-	static boolean debugFlag=true;
+	public static boolean debugFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
 	static File currentDirectory;

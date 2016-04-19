@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import clientPeer.Client;
 import lib.SenderReceiver;
 import lib.Chunk;
 import lib.ChunkTriplePeer;
@@ -30,7 +31,6 @@ public class Requester extends Thread{
 	
 	//Refer types 100, 101
 	public boolean checkIfPeerIsUp(Peer p){
-		long nanotime = System.nanoTime();
 		String payload = new SenderReceiver().sendDatagramAndGetUDPReplyOnWithTimer(p, new Packet(100, "").getPayload(), 7000);
 		if(payload.contentEquals("timeout"))
 			return false;
@@ -44,42 +44,14 @@ public class Requester extends Thread{
 		}
 	}
 	
-
-	//Refer type 102, 103
-//	public void getChunkList(String chunkname, Peer p, ArrayList<Peer> availablePeers) throws Exception{
-//		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(102,chunkname).getPayload());
-//		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-//		if(receivedPacket.getType()==103) {
-//			splitted = receivedPacket.getData().split(":");
-//			chunkname = splitted[0];
-//			Chunk toDistribute = new Chunk(chunkname, splitted[1]);
-//			byte[] chunksRetrieved = toDistribute.returnBytes();
-//			
-////			RoundRobin<Peer> p4 = new RoundRobin<Peer>(availablePeers);
-////			Iterator it = p4.iterator();
-//			int chunkIndex = 0;
-//			while(chunkIndex != chunksRetrieved.length-1) {
-//				Peer toSend = (Peer) it.next();
-//				if(checkIfPeerIsUp(toSend)){
-//					Chunk c = new Chunk(chunkname,String.valueOf(chunksRetrieved[chunkIndex]));
-//					chunkIndex++;
-//					push(toSend, c);
-//				} else {
-//					System.out.println(toSend.getIpAddress()+"is down!");
-//				}	
-//			}	
-//		} else {
-//			throw new Exception("ACK not received");
-//		}
-//		
-//	}
 			
 	//Refer types 106, 107
 	public void delete(Peer p, Chunk c) throws Exception{
 		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(106,c.getChunkName()).getPayload());
 		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
 		if(receivedPacket.getType()==107 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
-			System.out.println("Chunk deleted");
+			if(Client.debugFlag)
+				System.out.println("Chunk deleted");
 		} else {
 			throw new Exception("Reply not expected");
 		}
@@ -149,7 +121,8 @@ public class Requester extends Thread{
 	//Fetch 
 	public void fetchFile(P2pFile p2p){
 		metadata = p2p.getMetadata();
-		System.out.println("MD of file to fetch: "+metadata);
+		if(Client.debugFlag)
+			System.out.println("MD of file to fetch: "+metadata);
 		chunkList = p2p.getChunkList(); //empty
 		ArrayList<ChunkTriplePeer> ctpList = metadata.returnChunkPeer();
 		for (int chunkTripleIndex = 0; chunkTripleIndex< ctpList.size(); chunkTripleIndex++) {
@@ -222,34 +195,6 @@ public class Requester extends Thread{
 		}
 		
 	}
-	public static void main(String[] args){
-		
-	}
 }
-	
-//	class RoundRobin<Peer> implements Iterable<Peer>{
-//		private ArrayList<Peer> peers = new ArrayList<Peer>();
-//		
-//		public RoundRobin(ArrayList<Peer> peers){
-//			this.peers = peers;
-//		}
-//		@Override
-//		public Iterator<Peer> iterator() {
-//			return new Iterator<Peer>(){
-//				private int index = 0;
-//				
-//				public Peer next(){
-//					Peer curr = peers.get(index);
-//					//System.out.println(index);
-//					index = (index+1)%peers.size();
-//					return curr;
-//				}
-//				@Override
-//				public boolean hasNext() {
-//					// TODO Auto-generated method stub
-//					return true;
-//				}
-//			};
-//		}
 
 
