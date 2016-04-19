@@ -25,7 +25,7 @@ public class RequestReceiver extends Thread
          try
          {
             //System.out.println("Waiting for client on port " +serverSocket.getLocalPort() + "...");
-        	 byte[] receiveBuffer = new byte[512];
+        	 byte[] receiveBuffer = new byte[Integer.MAX_VALUE];
         	 DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
         	 UDPserverSocket.receive(receivePacket);
         	 System.out.println("Request received from "+ receivePacket.getSocketAddress()+":"+receivePacket.getPort()+" --> ");
