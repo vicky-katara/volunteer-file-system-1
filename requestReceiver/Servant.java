@@ -37,6 +37,7 @@ public class Servant extends Thread{
 		//while(true){
 			try {
 				receivedPacket = new Packet(new String(udpDatagram.getData()));
+				System.out.println("Servant trying to handle "+receivedPacket+" ...");
 				if(receivedPacket.getType()==100) {
 					new SenderReceiver().sendUDPReply(socketOnWhichToSend, new Peer(udpDatagram.getAddress().getHostAddress(), udpDatagram.getPort()), new Packet(101, "").getPayload());
 				} else if(receivedPacket.getType()==102) {

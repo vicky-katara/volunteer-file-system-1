@@ -53,12 +53,12 @@ public class P2pFile {
 			}
 			raf.seek(chunkNumber*256);
 			int numBytesRead = raf.read(b);
-			System.out.println("RAF read "+numBytesRead+" bytes of data into array of size "+b.length);
+//			System.out.println("RAF read "+numBytesRead+" bytes of data into array of size "+b.length);
 			//System.out.println(Arrays.toString(b).replace("[", "").replace("]", "").replace(", ", newChar));
 			raf.close();
 			byte[] bytesRead = new byte[numBytesRead];
 			System.arraycopy(b, 0, bytesRead, 0, numBytesRead);
-			System.out.println("Creating chunk with bytesRead of length "+bytesRead.length);
+//			System.out.println("Creating chunk with bytesRead of length "+bytesRead.length);
 			return new Chunk(Integer.toString(bytesRead.hashCode()), bytesRead);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
