@@ -28,7 +28,7 @@ public class RequestReceiver extends Thread
         	 byte[] receiveBuffer = new byte[512];
         	 DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
         	 UDPserverSocket.receive(receivePacket);
-        	 System.out.println("Request received from "+ receivePacket.getSocketAddress()+":"+receivePacket.getPort());
+        	 System.out.println("Request received from "+ receivePacket.getSocketAddress()+":"+receivePacket.getPort()+" --> ");
             
             // Start new 'Servant' thread and make it serve the peer
             new Servant(receivePacket, UDPserverSocket).start();
