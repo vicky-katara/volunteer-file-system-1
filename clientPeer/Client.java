@@ -120,7 +120,6 @@ public class Client {
 		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,help,exit");
 		while (!consoleString.equals("exit")){
 			// contains the main menu options
-			System.out.print(">");
 			consoleString = in.nextLine();
 
 			m = cd.matcher(consoleString);
