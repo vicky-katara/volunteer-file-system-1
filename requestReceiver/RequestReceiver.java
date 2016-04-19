@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import clientPeer.Client;
 import lib.Chunk;
 
 public class RequestReceiver extends Thread
@@ -30,7 +31,8 @@ public class RequestReceiver extends Thread
         	 byte[] receiveBuffer = new byte[Chunk.CHUNK_SIZE*10];
         	 DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
         	 UDPserverSocket.receive(receivePacket);
-        	 System.out.println("Request received from "+ receivePacket.getSocketAddress()+":"+receivePacket.getPort()+" --> ");
+        	 if(Client.debugFlag)
+        		 System.out.println("Request received from "+ receivePacket.getSocketAddress()+":"+receivePacket.getPort()+" --> ");
             
             // Start new 'Servant' thread and make it serve the peer
             new Servant(receivePacket, UDPserverSocket).start();

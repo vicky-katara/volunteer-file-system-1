@@ -47,7 +47,7 @@ public class SenderReceiver {
 	
 	public void sendMesssageViaTCPOn(Socket socket, String payload){
 		try{
-			if(Client.debugFlag)
+			if(Client.debugFlag && Client.debugMessagesFlag)
 				System.out.println("Sending "+payload+" to "+socket.getInetAddress().getHostAddress()+":"+socket.getPort());
 			if(socket.isClosed())
 				throw new Exception("sendMesssageOn:"+socket.toString()+" is closed. Cannot continue");
@@ -65,19 +65,19 @@ public class SenderReceiver {
 	
 	public String sendDatagramAndGetUDPReplyOn(Peer p, String payload){
 		try{
-			if(Client.debugFlag)
+			if(Client.debugFlag && Client.debugMessagesFlag)
 				System.out.println("Sending UDP "+payload+" to "+p);
 			DatagramSocket clientSocket = new DatagramSocket();
 			byte[] sendData = payload.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
-			if(Client.debugFlag)
+			if(Client.debugFlag && Client.debugMessagesFlag)
 				System.out.println("Sending datagram:"+sendData);
 			clientSocket.send(sendPacket);
 			byte[] receiveData = new byte[10240];
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			clientSocket.receive(receivePacket);
 			String reply = new String(receivePacket.getData());
-			if(Client.debugFlag) {
+			if(Client.debugFlag && Client.debugMessagesFlag) {
 				System.out.print("Received datagram:"+reply+"|");
 				System.out.print("Of the form :"+Arrays.toString(receivePacket.getData()));
 				System.out.println("from "+p);
@@ -89,7 +89,7 @@ public class SenderReceiver {
 	
 	public String sendDatagramAndGetUDPReplyOnWithTimer(Peer p, String payload, int milliseconds){
 		try{
-			if(Client.debugFlag)
+			if(Client.debugFlag && Client.debugMessagesFlag)
 				System.out.println("Sending Timer UDP "+payload+" to "+p);
 			DatagramSocket clientSocket = new DatagramSocket();
 			// Set timeout in milliseconds
@@ -97,14 +97,14 @@ public class SenderReceiver {
 			
 			byte[] sendData = payload.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
-			if(Client.debugFlag)
+			if(Client.debugFlag && Client.debugMessagesFlag)
 				System.out.println("Sending datagram:"+sendData);
 			clientSocket.send(sendPacket);
 			byte[] receiveData = new byte[10240];
 			DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
 			clientSocket.receive(receivePacket);
 			String reply = new String(receivePacket.getData());
-			if(Client.debugFlag) {
+			if(Client.debugFlag && Client.debugMessagesFlag) {
 				System.out.print("Received datagram:"+reply+"|");
 				System.out.print("Of the form :"+Arrays.toString(receivePacket.getData()));
 				System.out.println("from "+p);
@@ -122,7 +122,7 @@ public class SenderReceiver {
 			byte[] sendData = payload.getBytes();
 			DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName(p.getIpAddress()), p.getPortNumber());
 			//System.out.println("Sending UDP Reply datagram:"+payload+"|");
-			if(Client.debugFlag)
+			if(Client.debugFlag && Client.debugMessagesFlag)
 				System.out.println("Replying UDP "+payload+" to "+p);
 			serverSocket.send(sendPacket);
 		}
