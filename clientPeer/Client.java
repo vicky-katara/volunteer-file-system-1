@@ -120,7 +120,7 @@ public class Client {
 		System.out.println("commands supported:cd,mkdir,mv,mvb,rm,rename,pwd,help,exit");
 		while (!consoleString.equals("exit")){
 			// contains the main menu options
-			System.out.println(">");
+			System.out.print(">");
 			consoleString = in.nextLine();
 
 			m = cd.matcher(consoleString);
@@ -175,6 +175,13 @@ public class Client {
 				System.out.println(currentDirectory.getAbsolutePath());
 				continue;
 			}
+			if (consoleString.equals("ls")){
+				String[] stringArray = currentDirectory.list();
+				for (int x =0; x<stringArray.length; x++){
+					System.out.println(stringArray[x]);	
+				}
+				continue;
+			}
 			if (consoleString.equals("help")){
 				helpMessage();
 				continue;
@@ -198,6 +205,7 @@ public class Client {
 		System.out.println("rm .*			//remove from remote servers");
 		System.out.println("rename .* .*		//rename (current_remote_file_name new_remote_file_name)");
 		System.out.println("pwd			//shows current directory");
+		System.out.println("ls			//shows all files+directories in directory");
 		System.out.println("help			//shows this message");
 		System.out.println("exit			//exits");
 		
