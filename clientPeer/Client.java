@@ -264,17 +264,28 @@ public class Client {
 
 	private void mvb(String localFileName) {
 		// TODO Auto-generated method stub
-		String absolutePath= getAbsolutePath(localFileName+FileMetaData.METADATA_FILE_ENDING);
-		File localFile = new File(absolutePath);
+		String metaDataAbsolutePath;
+		if (!localFileName.endsWith(FileMetaData.METADATA_FILE_ENDING)){
+			metaDataAbsolutePath = getAbsolutePath(localFileName+FileMetaData.METADATA_FILE_ENDING);
+			localFileName = localFileName.replace("."+FileMetaData.METADATA_FILE_ENDING, "");
+		}
+		else {
+			metaDataAbsolutePath = getAbsolutePath(localFileName);
+		}
+				
+		File localFile = new File(metaDataAbsolutePath);
 		if (!localFile.exists()){
 			System.err.println("file not found, exiting");
 			return;
 		}
-		FileMetaData oldMetaData = FileMetaData.getFileMetadata(absolutePath);
+		FileMetaData oldMetaData = FileMetaData.getFileMetadata(metaDataAbsolutePath);
 		P2pFile p2pf = new P2pFile(oldMetaData);
 		Requester requestObject = new Requester();
 		requestObject.fetchFile(p2pf);
-		String outputLocation = System.getProperty("user.home")+File.separatorChar+"files"+File.separatorChar+localFileName;
+		String outputLocation = getAbsolutePath(localFileName);
+		if (debugFlag){
+			outputLocation = outputLocation + ".regen";
+		}
 
 		try { //reading the byte array and saving to a file.
 			File outputFile = new File(outputLocation);
@@ -306,7 +317,7 @@ public class Client {
 			Requester requestObject = new Requester();
 			requestObject.pushFile(p2pf, availablePeerList);
 			FileMetaData.StoreFileMetaDataFile(getAbsolutePath(localFileName), p2pf.getMetadata());
-			//localFile.delete();
+			if (!debugFlag) localFile.delete();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
