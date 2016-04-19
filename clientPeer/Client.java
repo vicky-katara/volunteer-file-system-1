@@ -13,6 +13,8 @@ import org.apache.commons.io.FileUtils;
 
 
 
+
+
 import lib.FileMetaData;
 import lib.NetworkAddress;
 import lib.P2pFile;
@@ -68,7 +70,7 @@ public class Client {
 		// go to command line interface
 	}
 	
-	ArrayList<Peer> getAvailablePeerList() {
+	ArrayList<Peer> getAvailablePeerList() throws Exception {
 		String portNumberPayload = new Packet(2, "").getPayload();//preparePayLoad(0, fileInfo); // FileNames is Option 0:
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
@@ -93,6 +95,10 @@ public class Client {
 		
 		// Available list
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
+		
+		if(peerList.size()<3){
+			throw new Exception("not enough peers. # of peers found:"+peerList.size());
+		}
 		return peerList;
 	}
 
