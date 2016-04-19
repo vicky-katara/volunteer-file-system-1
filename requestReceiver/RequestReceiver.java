@@ -7,6 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
+import lib.Chunk;
+
 public class RequestReceiver extends Thread
 {
    private DatagramSocket UDPserverSocket;
@@ -25,7 +27,7 @@ public class RequestReceiver extends Thread
          try
          {
             //System.out.println("Waiting for client on port " +serverSocket.getLocalPort() + "...");
-        	 byte[] receiveBuffer = new byte[Integer.MAX_VALUE];
+        	 byte[] receiveBuffer = new byte[Chunk.CHUNK_SIZE*10];
         	 DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
         	 UDPserverSocket.receive(receivePacket);
         	 System.out.println("Request received from "+ receivePacket.getSocketAddress()+":"+receivePacket.getPort()+" --> ");
