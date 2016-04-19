@@ -116,8 +116,18 @@ public class Requester extends Thread{
 	
 	//Refer types 104, 105
 	public void push(Peer p, Chunk c){
-		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(104,c.getChunkName()+":"+c.returnBytes()).getPayload());
-		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
+		String payload = new SenderReceiver().sendDatagramAndGetUDPReplyOnWithTimer(p, new Packet(104,c.getChunkName()+":"+c.returnBytes()).getPayload(), 7000);
+		
+		if(payload.contentEquals("timeout")){
+			try {
+				throw new Exception("timeout occured");
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+			
+		Packet receivedPacket = new Packet(payload);
 		if(receivedPacket.getType()==105 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
 			System.out.println("Chunk inserted");
 			//Update metadata here
