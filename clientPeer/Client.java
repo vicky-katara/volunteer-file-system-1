@@ -97,7 +97,9 @@ public class Client {
 		System.out.println("Here is the list of all Peers online right now:"+peerList);
 		
 		if(peerList.size()<3){
+			try{
 			throw new Exception("not enough peers. # of peers found:"+peerList.size());
+			} catch (Exception e){e.printStackTrace();}
 		}
 		return peerList;
 	}
@@ -255,10 +257,16 @@ public class Client {
 			return;
 		}
 		P2pFile p2pf = new P2pFile(absolutePath);
-		ArrayList<Peer> availablePeerList = getAvailablePeerList();
-		Requester requestObject = new Requester();
-		requestObject.pushFile(p2pf, availablePeerList);
-		localFile.delete();
+		ArrayList<Peer> availablePeerList;
+		try {
+			availablePeerList = getAvailablePeerList();
+			Requester requestObject = new Requester();
+			requestObject.pushFile(p2pf, availablePeerList);
+			localFile.delete();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 
