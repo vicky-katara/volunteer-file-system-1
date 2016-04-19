@@ -46,10 +46,10 @@ public class Requester extends Thread{
 	
 			
 	//Refer types 106, 107
-	public void delete(Peer p, Chunk c) throws Exception{
-		new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(106,c.getChunkName()).getPayload());
-		Packet receivedPacket = new Packet(new String(udpDatagram.getData()));
-		if(receivedPacket.getType()==107 && receivedPacket.getData().split(":")[0].equals(c.getChunkName())) {
+	public void delete(Peer p, Chunk c) throws Exception {
+		String type106packet = new SenderReceiver().sendDatagramAndGetUDPReplyOn(p, new Packet(106,c.getChunkName()).getPayload());
+		Packet receivedPacket = new Packet(type106packet);
+		if(receivedPacket.getType()==107 && receivedPacket.getData().equals(c.getChunkName()) ) {
 			if(Client.debugFlag)
 				System.out.println("Chunk deleted");
 		} else {
@@ -177,18 +177,15 @@ public class Requester extends Thread{
 		for(int chunkIndex=0; chunkIndex<chunkList.size();chunkIndex++){
 			
 			for(int replicaNumber = 1; replicaNumber <=3 ; replicaNumber++){
-				Peer toSend = returnNextPeer();
-				if(checkIfPeerIsUp(toSend)){
-					metadata.getChunkPeerNumber(chunkIndex).setPeerNumber(replicaNumber, toSend);
+				Peer whoHasChunk = metadata.getChunkPeerNumber(chunkIndex).getPeer(replicaNumber);
+				//Peer toSend = returnNextPeer();
+				if(checkIfPeerIsUp(whoHasChunk)){
+					//metadata.getChunkPeerNumber(chunkIndex).setPeerNumber(replicaNumber, toSend);
 					try {
-						delete(toSend, chunkList.get(chunkIndex));
+						delete(whoHasChunk, chunkList.get(chunkIndex));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-				} else {
-					availablePeers.remove(toSend);
-					chunkIndex--;
-					continue;
 				}
 			}
 
