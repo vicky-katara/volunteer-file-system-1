@@ -22,7 +22,7 @@ import requestReceiver.Requester;
 public class Client {
 
 	public static boolean debugFlag=true;
-	public static boolean debugMessagesFlag=true;
+	public static boolean debugMessagesFlag=false;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
 	static File currentDirectory;
