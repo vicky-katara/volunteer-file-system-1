@@ -197,8 +197,25 @@ public class Client {
 		}
 
 		in.close();
+		informServer();
+		System.exit(0);
 	}
 
+	private void informServer(){
+		String portNumberPayload = new Packet(4, "").getPayload();
+		// send payload via TCP to server
+		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
+		// receive list of all IP Addresses and Port Numbers from Server 
+		Packet type5Ack = new Packet(new SenderReceiver().receiveMessageViaTCPOn(socketToServer));
+		if(type5Ack.getType()!=5){
+			try {
+				throw new Exception("Unexpected message format: "+type5Ack);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private void ls() {
 		String[] stringArray = currentDirectory.list();
 		for (int x =0; x<stringArray.length; x++){

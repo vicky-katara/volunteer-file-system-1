@@ -47,7 +47,13 @@ public class Server extends Thread implements Runnable{
 				String payloadFromServer = packetFromServer.getPayload();
 				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, payloadFromServer);
 				break;
-			}			
+			case 4:
+				//Send current list of active peers to requesting client
+				Packet type5Packet = new Packet(5, "");
+				String type5Payload = type5Packet.getPayload();
+				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, type5Payload);
+				break;
+			}
 		}
 		
 		

@@ -28,6 +28,20 @@ Type 3: Server replies with a list of clients available to store data, including
 	Example:
 		|type|3|/type||data|192.168.56.1:7777;192.168.56.2:7777;192.168.56.3:7777;192.168.56.4:7777;|data|
 		
+Type 4: Client tells Server it is exiting
+
+	Format:
+		|type|4|/type||data||data|
+	Example:
+		|type|4|/type||data||data|
+		
+Type 5: Server acknowledges Exit.
+
+	Format:
+		|type|5|/type||data||data|
+	Example:
+		|type|5|/type||data||data|
+		
 Type 100: requestor asks requestReceiver whether it is on.
 
 	Format:
