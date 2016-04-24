@@ -3,6 +3,7 @@ package requestReceiver;
 import java.net.DatagramPacket;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import clientPeer.Client;
@@ -27,6 +28,7 @@ public class Requester extends Thread{
 	private String[] splitted;
 	private ArrayList<Peer> availablePeers;
 	private int lastPeerIndex = 0;
+	HashSet<Peer> unreachablePeers = new HashSet<Peer>();
 	//private ArrayList<ChunkTriplePeer> chunkPeerList;
 	
 	//Refer types 100, 101
@@ -146,6 +148,10 @@ public class Requester extends Thread{
 	
 	public boolean fetchChunkFromPeerNumber(ChunkTriplePeer ctp, int peerNumber) {
 		Peer isUp = ctp.getPeer(peerNumber);
+		if(unreachablePeers.contains(isUp)){
+			System.out.println(isUp+" was marked unreachable earlier. Going to non-primary-replicas...");
+			return false;
+		}
 		if(checkIfPeerIsUp(isUp)){
 			String chunkname = ctp.getChunkName();
 			String replyOf102 = new SenderReceiver().sendDatagramAndGetUDPReplyOn(isUp, new Packet(102,chunkname).getPayload());
@@ -167,6 +173,9 @@ public class Requester extends Thread{
 				return false;
 			}
 		} else {
+			System.err.println("Peer "+isUp+" cannot be reached... fetching non-primary replicas");
+			unreachablePeers.add(isUp);
+			System.out.println("Marked "+isUp+" as unreachable..");
 			return false;
 		}
 	}
