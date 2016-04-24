@@ -22,7 +22,7 @@ import requestReceiver.Requester;
 public class Client {
 
 	public static boolean debugFlag=true;
-	public static boolean debugMessagesFlag=false;
+	public static boolean debugMessagesFlag=true;
 	static int requestReceiverPortNumber = 4576;
 	static String selfIpAddress;
 	static File currentDirectory;
@@ -211,6 +211,12 @@ public class Client {
 			try {
 				throw new Exception("Unexpected message format: "+type5Ack);
 			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				socketToServer.close();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

@@ -56,6 +56,12 @@ public class Server extends Thread implements Runnable{
 				Packet type5Packet = new Packet(5, "");
 				String type5Payload = type5Packet.getPayload();
 				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, type5Payload);
+//				try {
+//					clientSocket.close();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				break;
 			}
 		}
