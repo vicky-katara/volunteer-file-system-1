@@ -48,7 +48,11 @@ public class Server extends Thread implements Runnable{
 				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, payloadFromServer);
 				break;
 			case 4:
-				//Send current list of active peers to requesting client
+				// Unregister peer
+				String[] endingClientInformation = payloadFromClient.getData().split(":");
+				String endingClientIPaddress = endingClientInformation[0];
+				int endingClientPortNumber = Integer.parseInt(endingClientInformation[1]);
+				removeFromHash(endingClientIPaddress, endingClientPortNumber);
 				Packet type5Packet = new Packet(5, "");
 				String type5Payload = type5Packet.getPayload();
 				new SenderReceiver().sendMesssageViaTCPOn(clientSocket, type5Payload);
@@ -61,6 +65,10 @@ public class Server extends Thread implements Runnable{
 	
 	public void addToHash(String clientIPaddress, int clientPortNumber){
 		globalSet.put(clientIPaddress, clientPortNumber);
+	}
+	
+	public void removeFromHash(String clientIPaddress, int clientPortNumber){
+		globalSet.remove(clientIPaddress);
 	}
 	
 	public void emptyHash(){

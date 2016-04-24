@@ -202,7 +202,7 @@ public class Client {
 	}
 
 	private void informServer(){
-		String portNumberPayload = new Packet(4, "").getPayload();
+		String portNumberPayload = new Packet(4, Client.selfIpAddress+":"+Client.requestReceiverPortNumber).getPayload();
 		// send payload via TCP to server
 		new SenderReceiver().sendMesssageViaTCPOn(socketToServer, portNumberPayload);
 		// receive list of all IP Addresses and Port Numbers from Server 
